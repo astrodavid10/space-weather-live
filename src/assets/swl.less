@@ -1,0 +1,236 @@
+// Sol-specific global styling. Component-scoped styles live in the SFCs;
+// only cross-component tokens and page-level rules belong here.
+//
+// PALETTE PROVENANCE. The chrome is the INTUITIVE Planetarium brand kit's:
+// Spaceberry #0e0024 and Spacebubble #202267 as the primaries, Cosmaroon
+// #821036 as the accent, Light Speed White #f5f4f0 and Spaceship Gray #949baf
+// as the neutrals. The kit's own stated principle is that "Spaceberry acts as
+// the default Dark color rather than black."
+//
+// The app was previously gold-on-warm-brown throughout, and the real problem
+// was TEMPERATURE, not the particular yellow: --sol-accent gold, a muddy olive
+// --sol-surface, warm cream text and warm gray dim text meant nothing could pop
+// against neighbors of its own temperature. Cooling the neutrals is the fix.
+//
+// WHAT IS DELIBERATELY *NOT* BRAND-COLORED: the in-scene physics colors. Closed
+// field loops (gold), outbound open field (blue), inbound open field (orange)
+// and the solar wind (pale blue-white) are the DOME SHOW's legend, and a guest
+// may see the dome an hour before they scan the QR code. Recoloring them would
+// break that parity for the sake of a palette. The apparent lift comes entirely
+// from taking gold OUT of the chrome, which raises the field lines' perceived
+// saturation without touching a single data value.
+//
+// ── WHY THE SURFACES ARE NAVY AND NOT VIOLET ────────────────────────────────
+// A first pass took Spaceberry literally and used a violet surface while
+// keeping gold as the UI's "on" state. Reported, correctly, as reading like
+// LSU. It is not a matter of taste — it is measurable:
+//
+//   LSU purple  #461D7C  hue 265.9        LSU gold  #FDD023  hue 47.6
+//   that surface #0E0526 hue 256.4         that accent      hue 41.1
+//                        ^^^ 9.5 deg apart                  ^^^ 6.5 deg apart
+//
+// Two colours that close to a famous pair, used in the same relationship
+// (dark ground + bright accent), read as that pair. Two changes fix it, and
+// both are independently defensible:
+//
+//   1. The surface moves to hue ~230 -- navy, 36 deg from LSU purple, and much
+//      closer to Spacebubble (238) than to Spaceberry (263). "Deep space" was
+//      always the brief; navy says it and grape does not. Contrast IMPROVES:
+//      14.73:1 for body text over a bright disk, against 14.05:1 before.
+//   2. Gold stops being the UI's "on" state. It now appears ONLY where it
+//      carries data meaning -- the closed-field lines, a C-class flare mark,
+//      the active-region ring. Selection is a brand NEUTRAL instead
+//      (--sol-select, Nova White), which measures 16.37:1 on the panel against
+//      gold's 12.66:1 and cannot be confused with any physics colour.
+//
+// That second change is also the honest reading of the original brief: "away
+// from the yellow on brown grey". Keeping gold for selection kept the
+// yellow-on-dark relationship the brief was asking to leave.
+
+:root {
+  // ── Data-adjacent accents (unchanged; see the note above) ────────────────
+  // Gold is DATA, not chrome. It means "closed magnetic field loop" in the dome
+  // show, and by extension a C-class flare mark and the ring around an active
+  // region. It is no longer the UI's "on" state -- see --sol-select and the
+  // LSU note above. Do not reach for it to indicate selection.
+  --sol-accent: #ffc850;        // warm solar gold (matches dome closed-line color)
+  // The gold triplet was retyped as a literal `rgba(255, 200, 80, a)` at 19
+  // sites across 7 files, so changing the accent needed a find/replace on the
+  // RGB numbers as well as the variable -- and common.less held a DEAD copy
+  // that poisoned exactly that search. One token now, used with alpha.
+  --sol-accent-rgb: 255, 200, 80;
+  --sol-accent2: #5fb8ff;       // open-field blue
+  --sol-accent2-rgb: 95, 184, 255;
+
+  // ── Grounds ───────────────────────────────────────────────────────────────
+  // --sol-bg stays #000 deliberately, NOT Spaceberry: it has to match the WebGL
+  // sky exactly or a seam appears at the canvas edge, and WWT owns the sky
+  // color on a shared canvas.
+  --sol-bg: #000;
+  // Deep-space navy: hue 230, between Spacebubble (238) and the kit's darkest
+  // ground, and 36 deg clear of LSU purple. Composites to #070B1F over the sky
+  // and #1C1F34 over the bright photosphere -- 17.7:1 and 14.7:1 against
+  // --sol-text (WCAG 2.1 relative luminance, computed, not estimated).
+  --sol-surface: rgba(8, 12, 34, 0.92);
+  // A Spacebubble veil for anything that sits ON a surface.
+  --sol-surface-raised: rgba(32, 34, 103, 0.34);
+  // The dark half of every dual-contrast mark: a contour that wins over the
+  // bright disk, where no single color survives (gold text on the photosphere
+  // measures 1.54:1). Navy-black, matching the surfaces.
+  --sol-casing: #04060f;
+
+  // ── Type ──────────────────────────────────────────────────────────────────
+  --sol-text: #f5f4f0;          // Light Speed White, verbatim from the kit
+  --sol-text-dim: #a6aec4;      // Spaceship Gray, lightness 63% -> 71%
+  // The floor of the system: 5.4:1 on a panel. Keep it to 12px+ short strings,
+  // never a sentence.
+  --sol-text-quiet: #7e86a0;
+
+  // ── Brand accents, lifted to function on a dark ground ────────────────────
+  // Cosmaroon (#821036) and Spacebubble (#202267) are far too dark to be
+  // accents against a dark surface -- 28.6% and 26.5% lightness. Both are hue-
+  // and saturation-held lifts, not new hues.
+  //
+  // EMBER GUARD-RAIL: ember sits at hue 340 deg, the inbound-field orange at 20
+  // and the X-flare marker at 6 -- under deuteranopia the three converge. Ember
+  // is therefore restricted to exactly three places, never adjacent to data:
+  // the hairline rule under the title, the rail's section-header rules, and the
+  // kiosk "Take it with you" pill. Never a status, never a severity, never a
+  // legend swatch.
+  --sol-ember: #f34982;         // Cosmaroon, hue 340 held, L 28.6 -> 62%
+  --sol-violet: #7b7ee0;        // Spacebubble, hue 238 held, L 26.5 -> 68%
+  --sol-violet-rgb: 123, 126, 224;
+
+  --app-content-height: 100dvh;
+
+  // ── Panels ────────────────────────────────────────────────────────────────
+  // One panel treatment, so the desktop rail reads as a single column of
+  // surfaces rather than three components that each invented their own border,
+  // radius and padding. Components use these instead of hardcoding, which is
+  // what let them drift apart in the first place.
+  //
+  // The border was gold, which painted every rail panel in the same hue as
+  // closed field loops -- the chrome competing with the Sun instead of framing
+  // it. A cool neutral at low alpha is the single highest-leverage line here:
+  // it takes gold off every panel at once.
+  --sol-panel-border: 1px solid rgba(148, 155, 175, 0.22);
+  --sol-panel-radius: 14px;
+  // Radius for a CONTROL inside a panel, as distinct from the panel itself.
+  // The layer rows, the layer segments, the stat chips and the scrubber's own
+  // controls were at 9, 9, 10 and 12 px -- four values for one idea, which is
+  // most of why the three panels read as three different designs.
+  --sol-control-radius: 9px;
+  // The inset hairline is a LIT TOP EDGE rather than a drawn box -- the whole
+  // "modern" move, and it costs nothing because a comma list still fits in one
+  // token, so no component needs editing.
+  --sol-panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(245, 244, 240, 0.07);
+  --sol-panel-pad: 1rem;
+  // Horizontal breathing room the rail applies to every child alike.
+  --sol-rail-gutter: 0.75rem;
+
+  // Label plates over the canvas, same hue family as the panels.
+  --sol-label-bg: rgba(7, 11, 31, 0.90);
+
+  // ── The UI's own vocabulary ────────────────────────────────────────────────
+  // "On" / "selected", replacing gold. A brand neutral rather than a hue, so it
+  // can never be mistaken for one of the four physics colours -- which is a
+  // problem gold genuinely had: a gold-bordered switch sat next to gold closed
+  // field lines meaning something completely different.
+  --sol-select: #eaebef;        // Nova White, verbatim from the kit
+  --sol-select-rgb: 234, 235, 239;
+
+  // The ONE place amber survives in the chrome. "Caution" is what amber means
+  // almost universally, and warnings here are rare, short-lived and never sit
+  // next to a field line -- so the confusion that got gold banished from
+  // selection does not arise. A separate token rather than reusing
+  // --sol-accent, so that "this is a warning" and "this is closed magnetic
+  // field" can be re-tuned independently instead of being the same string.
+  --sol-warn: #ffc24d;
+  --sol-warn-rgb: 255, 194, 77;
+
+  // The two greys this UI kept re-inventing as bare `rgba(255,255,255,x)`.
+  // Pure white on a navy ground reads slightly cold and dirty; the kit's
+  // Spaceship Gray is the same job done on-palette.
+  --sol-hairline: rgba(148, 155, 175, 0.16);   // dividers, unselected borders
+  --sol-hover: rgba(148, 155, 175, 0.10);      // pressed / hovered fill
+
+  // KioskQrModal.vue is shared verbatim between data stories and paints with
+  // the skeleton's generic accent tokens. Aliasing them here is how Sol dresses
+  // it in the app's own accents without editing the copied component.
+  //
+  // NOT --sol-accent: the modal paints --accent-color on its panel border, its
+  // title, the QR card's border AND glow, and the close button -- five gold
+  // strokes on the single most guest-visible kiosk surface, i.e. exactly the
+  // yellow-on-dark chrome the LSU note above exists to keep out. The modal's
+  // accent is chrome, not data, so it gets the chrome's "on" neutral.
+  // --- Space Weather Live ------------------------------------------------
+  // LIVE badge and freshness "fresh": sol's own StatChip green promoted to a
+  // token (LIVE and fresh are one meaning). 10.6:1 on the surface over sky.
+  // The badge always spells the WORD, because the aurora is also green.
+  --swl-live: #58d68d;
+  --swl-live-rgb: 88, 214, 141;
+  --accent-color: var(--sol-select);
+  --accent-color2: var(--sol-accent2);
+}
+
+@supports not (height: 100dvh) {
+  :root {
+    --app-content-height: 100vh;
+  }
+}
+
+// Placeholder shown while the async 3D chunk downloads (and if it fails).
+// Global rather than scoped to sol.vue because sol.vue renders it from a render
+// function, which gets no scoped-style attribute. SolarView3D.vue has its own
+// cover for the slower phase — waiting on WWT itself.
+.sol-3d-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.2rem;
+  text-align: center;
+}
+
+.sol-spinner {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  // Neutral, not gold: this ring is pure chrome (it spins before any data —
+  // or Sun — exists to mean anything), and it was one of the last two gold
+  // strokes outside the data vocabulary (the other was the QR modal alias
+  // below). Same "lit neutral" the switches use for their on state.
+  border: 4px solid rgba(var(--sol-select-rgb), 0.22);
+  border-top-color: var(--sol-select);
+  animation: sol-spin 1s linear infinite;
+}
+
+.sol-3d-text {
+  margin: 0;
+  color: var(--sol-text-dim);
+  font-size: 0.95rem;
+}
+
+// Every live number, everywhere. Without this, a value re-rendering every few
+// seconds jitters as its glyph widths change, which reads as instability in the
+// data rather than in the font.
+.sol-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+// The kit presents its own section headers as letterspaced caps over a thin
+// rule spanning the column. Borrowed here so the rail's headings look like the
+// brand's rather than like bold body text.
+.sol-section-head {
+  margin: 0 0 0.45rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid rgba(148, 155, 175, 0.18);
+  color: var(--sol-text-dim);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}

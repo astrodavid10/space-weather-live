@@ -1,0 +1,260 @@
+// ── BASE RESET ───────────────────────────────────────────────────────────────
+// These declarations used to arrive from Vuetify. `vuetify/styles` bundles
+// ress.css 2.0.4 plus its own `html` rule, and the whole 587 KB / 85 KB-gzip
+// render-blocking stylesheet was being shipped for exactly one `<v-app>`
+// wrapper in sol.vue (removed 2026-09-02). The wrapper is gone; the parts of
+// its reset the layout actually depended on are restated here, and nothing
+// else is. This block must stay FIRST in the file, so every app rule below
+// still overrides it exactly as it overrode Vuetify's (chunk-vendors.css was
+// linked before app.css).
+//
+// Why each one is load-bearing:
+//   * box-sizing: border-box -- sol.less' panel tokens size padding and border
+//     INSIDE a declared width (--sol-panel-pad + --sol-panel-border on a
+//     `width: 100%` rail panel); content-box would inflate every one of them.
+//   * margin/padding 0 on everything -- the app lays out `<p>` (`.sol-title`,
+//     `.sol-attract-hint`) and `<main>` with no allowance for UA margins.
+//     Several rules zero their own margin defensively; most do not.
+//   * form-control normalization -- 21 `<button>`s across 10 components, and
+//     only two of them set a font, so `font: inherit` is the whole reason they
+//     render in the app's 11pt system-ui rather than the UA's 13.3px Arial.
+//     `background-color: transparent; border-style: none` is what makes an
+//     unstyled button invisible chrome instead of a grey lozenge.
+//   * line-height: 1.5 -- Vuetify set this on <html>; the UA default is ~1.2,
+//     so dropping it would retighten every wrapped string in the app.
+//   * -webkit-text-size-adjust / -webkit-tap-highlight-color -- mobile-only,
+//     and this is a mobile-first app: without them iOS inflates text in
+//     landscape and flashes a grey box on every tap.
+//   * color-scheme: dark -- Vuetify's dark theme injected `:root {
+//     color-scheme: dark }` at runtime. It is what keeps the UA's own bits
+//     (Firefox scrollbars on the internally-scrolling panels, form-control
+//     defaults) dark rather than light on a black app.
+//
+// Deliberately NOT restated: everything in ress that modern browsers already
+// do (`[hidden] { display: none }`, `img { border-style: none }`,
+// `main { display: block }`, `a { background-color: transparent }`), and
+// `.v-application`'s Material theme colors -- its `background: #121212` was
+// completely covered by `.sol-root`'s own `--sol-bg` (#000) over html's #000,
+// and its inherited `color: rgba(255,255,255,.87)` is replaced by the app's
+// own `--sol-text` on `#app` below.
+html {
+  box-sizing: border-box;
+  line-height: 1.5;
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  background-repeat: no-repeat;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font: inherit;
+  background-color: transparent;
+  border-style: none;
+}
+
+[role="button"],
+[type="button"],
+[type="reset"],
+[type="submit"],
+button {
+  cursor: pointer;
+  color: inherit;
+}
+
+[disabled] {
+  cursor: default;
+}
+
+textarea {
+  overflow: auto;
+  resize: vertical;
+}
+
+// The one bundled face, used for the app title and the info-modal heading.
+//
+// Overpass, not Highway Gothic Narrow. Both descend from the US FHWA Standard
+// Alphabets, so the look is the same lineage -- but the Highway Gothic
+// digitization we shipped carried NO license record at all (no nameID 13, no
+// nameID 14), and publishing this repo redistributes whatever is in it.
+// Overpass self-declares SIL OFL 1.1 in its own name table and ships its
+// license text alongside at ./Overpass-LICENSE.md.
+//
+// `swap`: this is decoration on a short string. It must never hold up the
+// first paint of the Sun.
+@font-face {
+  font-family: "Overpass";
+  src: url("./Overpass-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+.no-select {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* Overall page styling */
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+
+  overflow: hidden;
+  -ms-overflow-style: none;
+
+  /* We don't want a scrollbar for the overall canvas */
+  scrollbar-width: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+body {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  /* Was #aec2fd, the donor project's periwinkle -- the one off-palette color
+     left in the app, and the only link color it has. Brand violet instead. */
+  /* Space Weather Live: violet is DATA here (the interplanetary field lines),
+     so chrome links are neutral Nova White, underlined. */
+  color: var(--sol-select);
+  text-decoration: underline;
+  pointer-events: auto;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/*
+  The main content of the app.
+  The --app-content-height allows the app to shrink when a sheet is open.
+ */
+#main-content {
+  position: fixed;
+  width: 100%;
+  height: var(--app-content-height, 100dvh);
+  overflow: hidden;
+
+  transition: height 0.1s ease-in-out;
+}
+
+// The mount container from public/index.html, and now the ONLY element in the
+// document carrying this id: sol.vue used to render `<v-app id="app">` INSIDE
+// it, so `#app` matched two nested elements and every rule here silently
+// applied twice. sol.vue's root is `#main-content` now.
+//
+// `color` is here because it used to be inherited from `.v-application`
+// (Material's `rgba(255,255,255,.87)`, i.e. ~#ddd on black). `.sol-root` sets
+// --sol-text for the app proper, but its SIBLINGS inside #main-content -- the
+// kiosk take-home pill, the attract hint, the phone info sheet, the QR modal
+// -- inherit from here, and with no default they would have rendered UA black
+// on a black ground.
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-size: 11pt;
+  color: var(--sol-text);
+
+  .wwtelescope-component {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-style: none;
+    border-width: 0;
+    margin: 0;
+    padding: 0;
+    transition: height .25s ease;
+    canvas {
+      background-color: black;
+    }
+  }
+}
+
+/* Vue 3 names the start-of-enter class `-enter-from`. This block said
+   `.fade-enter`, which is the VUE 2 name, so every `<transition name="fade">`
+   in the app faded out correctly and snapped in with no transition at all. */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+
+/* The modal loading window */
+.modal {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes sol-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Miscellaneous class styling */
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 15;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:focus {
+    color: white;
+    border: 2px solid white;
+  }
+}
+
+/* Kiosk mode (museum touchscreen). Class toggled by src/kiosk/kiosk.ts. */
+body.kiosk-mode {
+  overscroll-behavior: none;     /* kill pull-to-refresh / rubber-band */
+  -webkit-touch-callout: none;   /* kill long-press callout */
+}

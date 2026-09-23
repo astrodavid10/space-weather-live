@@ -1,0 +1,47 @@
+{
+  "name": "space-weather-live",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.12.0",
+  "scripts": {
+    "build": "vue-cli-service build",
+    "clean": "rimraf dist",
+    "lint": "vue-cli-service lint src --no-fix",
+    "serve": "vue-cli-service serve",
+    "test:pipeline": "python -m pytest pipeline/tests -q",
+    "typecheck": "tsc --noEmit",
+    "data:local": "python -m pipeline storms --zip LiveMagnetosphere_web_bundle_2026-09-22.zip --out public/data --with-lookback"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/vue-fontawesome": "^3.0.5",
+    "@wwtelescope/engine": "^7.39.0",
+    "@wwtelescope/engine-pinia": "^0.15.0",
+    "pinia": "^3.0.4",
+    "qrcode.vue": "^3.6.0",
+    "three": "^0.185.0",
+    "vue": "^3.4.15"
+  },
+  "devDependencies": {
+    "@types/three": "^0.185.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-plugin-typescript": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/compiler-sfc": "^3.3.10",
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "eslint": "^8.55.0",
+    "eslint-plugin-vue": "^9.19.2",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.3",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.2",
+    "webpack": "^5.89.0"
+  },
+  "resolutions": {
+    "@wwtelescope/engine": "^7.39.0",
+    "@wwtelescope/engine-pinia": "^0.15.0",
+    "pinia": "^3.0.4"
+  }
+}

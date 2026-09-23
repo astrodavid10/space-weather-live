@@ -1,0 +1,217 @@
+name: data
+
+# The 48-hour look-back: fetch real L1 solar wind from CCMC ISWA, render it with
+# the vendored dome engine (pipeline/engine), export mobile + desktop web
+# bundles, and publish data/lookback + data/index.json to gh-pages.
+#
+# The SCHEDULE is commented out until the engine snapshot is vendored and a
+# manual run has been timed (plan milestone M6). Uncomment it then. The cron is
+# NOT the staleness guarantee (sol measured a 74 min median delay and 13 h worst
+# gaps); freshness.yml, which reads the LIVE site, is.
+on:
+  # schedule:
+  #   - cron: "13 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Ignore --resume caches and re-render every epoch"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Build + validate but do not publish to gh-pages"
+        type: boolean
+        default: false
+      presets:
+        description: "Web presets to export"
+        type: choice
+        options: [both, mobile, desktop]
+        default: both
+      end_utc:
+        description: "Pin the window end (ISO-8601 Z). Empty = newest ISWA serves."
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+  issues: write
+
+# Serialized with app-deploy.yml: both force-push one orphan commit to gh-pages.
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Field lines alone are ~82 CPU-min on 4 vCPU; run #1 measures the rest.
+    # Re-set to ~2.5x the measured time once known.
+    timeout-minutes: 150
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r pipeline/requirements.txt
+
+      # geopack downloads IGRF coefficients AT IMPORT and dies on a NOAA 503;
+      # the vendored copy makes the import offline-safe (engine README gotcha 1).
+      - name: Install vendored IGRF coefficients
+        if: ${{ hashFiles('pipeline/engine/vendor/install_igrf.py') != '' }}
+        run: python pipeline/engine/vendor/install_igrf.py
+
+      # Rolling cache: the run_id key always misses so the cache is re-saved;
+      # restore-keys pull the newest previous copy (sol's idiom).
+      - name: Restore pipeline cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            pipeline/.cache
+            pipeline/.work/events
+          key: swl-cache-${{ github.run_id }}
+          restore-keys: |
+            swl-cache-
+
+      # LOAD-BEARING (sol footgun 31): the failure policy is written against
+      # "what is currently published". On a fresh runner dist-data is empty, so
+      # the previous look-back could never be kept without this.
+      - name: Seed dist-data from the currently published tree
+        run: |
+          git fetch --depth=1 origin gh-pages 2>/dev/null || echo "no gh-pages yet -- nothing to seed"
+          if git rev-parse --verify -q origin/gh-pages >/dev/null; then
+            rm -rf .ghp-seed && mkdir -p .ghp-seed
+            git --work-tree=.ghp-seed checkout origin/gh-pages -- data || true
+            git reset -q
+            if [ -d .ghp-seed/data ]; then
+              mkdir -p dist-data && cp -a .ghp-seed/data/. dist-data/
+              echo "seeded $(find dist-data -type f | wc -l) file(s) from gh-pages"
+            fi
+            rm -rf .ghp-seed
+          fi
+
+      # The storms are TS05 renders CI can never rebuild. This workflow never
+      # publishes data/storms, but index.json LISTS them from the seed -- so a
+      # broken seed must stop the run rather than publish "no storms".
+      - name: Guard - the seeded tree must still hold the storms
+        run: |
+          if git cat-file -e origin/gh-pages:data/storms/index.json 2>/dev/null; then
+            test -f dist-data/storms/index.json \
+              || { echo "gh-pages has data/storms/index.json but the seed does not -- refusing"; exit 1; }
+          fi
+
+      - name: Build the look-back
+        env:
+          FORCE: ${{ inputs.force }}
+          PRESETS: ${{ inputs.presets }}
+          END_UTC: ${{ inputs.end_utc }}
+        run: |
+          ARGS="lookback --out dist-data --workers 4 -v"
+          case "$PRESETS" in
+            mobile)  ARGS="$ARGS --presets mobile" ;;
+            desktop) ARGS="$ARGS --presets desktop" ;;
+            *)       ARGS="$ARGS --presets mobile,desktop" ;;
+          esac
+          if [ "$FORCE" = "true" ]; then ARGS="$ARGS --force"; fi
+          if [ -n "$END_UTC" ]; then ARGS="$ARGS --end $END_UTC"; fi
+          python -m pipeline $ARGS
+
+      # PUBLISH FIRST (sol footguns 50/51): `pipeline lookback` validated each
+      # preset before promoting it and exits 0 whenever it wrote an index, so a
+      # green build step means "dist-data is publishable". Two pairs, one commit:
+      # data/storms is never touched by this workflow.
+      - name: Publish to gh-pages
+        if: ${{ inputs.dry_run != true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          PAIRS="dist-data/index.json:data/index.json"
+          if [ -d dist-data/lookback ]; then PAIRS="dist-data/lookback:data/lookback $PAIRS"; fi
+          bash scripts/publish_gh_pages.sh $PAIRS
+
+      # A TRIPWIRE, deliberately powerless: it runs after the publish and cannot
+      # un-publish. A failure means the pre-promote checks let something through.
+      - name: Validate (post-publish tripwire)
+        run: python -m pipeline validate --root dist-data --strict
+
+      # A DEGRADED PUBLISH IS A GREEN RUN NOBODY SHOULD BE HAPPY ABOUT.
+      - name: Verdict
+        if: ${{ !cancelled() }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, sys
+          p = pathlib.Path("dist-data/index.json")
+          if not p.exists():
+              print("VERDICT: FAIL -- no dist-data/index.json; nothing was promoted.")
+              sys.exit(1)
+          d = json.loads(p.read_text(encoding="utf-8"))
+          lb = d["sources"].get("lookback", {})
+          st = d["sources"].get("storms", {})
+          table = "\n".join([
+              "generated_iso        %s" % d.get("generated_iso"),
+              "last_attempt_status  %s" % d.get("last_attempt_status"),
+              "lookback  status=%s  event=%s  data_end=%s (%s h)  feed=%s" % (
+                  lb.get("status"), lb.get("event_id"), lb.get("data_end_iso"),
+                  lb.get("data_age_hours"), lb.get("feed")),
+              "          %s" % (lb.get("last_error") or lb.get("note") or ""),
+              "storms    status=%s  count=%s" % (st.get("status"), st.get("count")),
+              "timing    %s" % json.dumps(lb.get("timing") or {})])
+          print(table)
+          pathlib.Path("verdict.txt").write_text(table + "\n", encoding="utf-8")
+          s = os.environ.get("GITHUB_STEP_SUMMARY")
+          if s:
+              open(s, "a", encoding="utf-8").write("### data verdict\n\n```\n%s\n```\n" % table)
+          bad = [x for x in (
+              d.get("last_attempt_status") != "ok" and "last_attempt_status=%s" % d.get("last_attempt_status"),
+              lb.get("status") != "ok" and "lookback=%s" % lb.get("status"),
+              st.get("status") != "ok" and "storms=%s" % st.get("status")) if x]
+          if bad:
+              print("\nVERDICT: FAIL -- " + ", ".join(bad))
+              print("The tree above IS published and served; this run is red so it is seen.")
+              sys.exit(1)
+          print("\nVERDICT: ok")
+          PY
+
+      # ONE issue with a FIXED title is the dashboard; each failure is a comment.
+      - name: Notify on failure
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          TITLE='data pipeline: scheduled run failing'
+          {
+            echo "A \`$EVENT\` run failed at $(date -u +%Y-%m-%dT%H:%M:%SZ)."
+            echo; echo "$RUN_URL"; echo
+            if [ -s verdict.txt ]; then echo '```'; cat verdict.txt; echo '```'; fi
+          } > notify-comment.md
+          NUM=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -z "$NUM" ] || [ "$NUM" = "null" ]; then gh issue create --title "$TITLE" --body-file notify-comment.md
+          else gh issue comment "$NUM" --body-file notify-comment.md; fi
+
+      # gh-pages keeps no history, so the 7-day artifact is the audit trail.
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lookback-and-logs
+          path: |
+            dist-data/index.json
+            dist-data/lookback
+            pipeline/.work/render.log
+          retention-days: 7
+          if-no-files-found: ignore

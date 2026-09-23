@@ -1,0 +1,78 @@
+name: freshness
+
+# Reads the LIVE site, not the tree that was meant to become it -- the only check
+# that can see a failed data run, a cron that never fired, or a wedged Pages
+# build (sol footguns 34/49). Opens one fixed-title issue; closes it when fresh.
+#
+# Disabled (dispatch-only) until the look-back pipeline is scheduled (M6);
+# until then the hand-published look-back is stale by design.
+on:
+  # schedule:
+  #   - cron: "41 */2 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SITE: https://astrodavid10.github.io/space-weather-live
+      # 6 h cadence + 3 h measured cron slop.
+      INDEX_STALE_HOURS: "9"
+      # Newest look-back epoch vs now. ISWA's own lag is measured on the first
+      # scheduled runs; raise this WITH a note rather than let it become noise.
+      DATA_END_STALE_HOURS: "30"
+    steps:
+      - name: Check the live data
+        run: |
+          CODE=$(curl -sS --retry 2 --max-time 30 -o index.json -w '%{http_code}' \
+                 "$SITE/data/index.json?_=$(date +%s)") || CODE=000
+          if [ "$CODE" != "200" ]; then echo "STALE: index.json HTTP $CODE"; exit 1; fi
+          python3 - <<'PY'
+          import datetime, json, os, pathlib, sys
+          P = lambda s: datetime.datetime.fromisoformat(s.replace("Z", "+00:00"))
+          now = datetime.datetime.now(datetime.timezone.utc)
+          d = json.loads(pathlib.Path("index.json").read_text(encoding="utf-8"))
+          lb = d["sources"].get("lookback", {}); st = d["sources"].get("storms", {})
+          def age(s):
+              try: return (now - P(s)).total_seconds() / 3600
+              except Exception: return None
+          ia, da = age(d.get("generated_iso") or ""), age(lb.get("data_end_iso") or "")
+          imax, dmax = float(os.environ["INDEX_STALE_HOURS"]), float(os.environ["DATA_END_STALE_HOURS"])
+          table = "index %s (%s h)  lookback %s data_end %s (%s h)  storms %s x%s" % (
+              d.get("generated_iso"), ia and round(ia, 1), lb.get("status"),
+              lb.get("data_end_iso"), da and round(da, 1), st.get("status"), st.get("count"))
+          print(table); pathlib.Path("freshness.txt").write_text(table + "\n")
+          stale = []
+          if ia is None or ia > imax: stale.append("index older than %.0f h" % imax)
+          if da is None or da > dmax: stale.append("look-back data older than %.0f h" % dmax)
+          if st.get("status") != "ok": stale.append("storms missing")
+          if stale: print("STALE: " + "; ".join(stale)); sys.exit(1)
+          print("FRESH")
+          PY
+
+      - name: Open or update the stale issue
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          TITLE='live data is stale'
+          { echo "Live-data check failed at $(date -u +%FT%TZ)."; echo; echo "$RUN_URL"; echo
+            [ -s freshness.txt ] && { echo '```'; cat freshness.txt; echo '```'; }; } > c.md
+          NUM=$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -z "$NUM" ] || [ "$NUM" = "null" ]; then gh issue create --title "$TITLE" --body-file c.md || true
+          else gh issue comment "$NUM" --body-file c.md || true; fi
+
+      - name: Close the stale issue when fresh again
+        if: ${{ success() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          NUM=$(gh issue list --state open --search 'in:title "live data is stale"' --json number --jq '.[0].number' 2>/dev/null || true)
+          if [ -n "$NUM" ] && [ "$NUM" != "null" ]; then gh issue close "$NUM" --comment "fresh again at $(date -u +%FT%TZ)" || true; fi

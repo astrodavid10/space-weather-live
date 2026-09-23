@@ -1,0 +1,60 @@
+# ── Build output ──────────────────────────────────────────────────────────
+/dist/
+dist-data/
+tsconfig.tsbuildinfo
+
+# ── Dependencies ──────────────────────────────────────────────────────────
+node_modules/
+
+**/.yarn/*
+!**/.yarn/releases
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/sdks
+!**/.yarn/versions
+
+.pnp.*
+
+# ── Python ────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+pipeline/.cache/
+
+# ── Pipeline dev output (regenerable; served by yarn serve in dev) ────────
+# NOTE: deliberately anchored — a bare `data/` would also swallow src/data/.
+/public/data/
+
+# ── Editor / OS ───────────────────────────────────────────────────────────
+/.vs/
+.vscode/settings.json
+.claude/
+.DS_Store
+*/.DS_Store
+*.log
+
+# ── Secrets ───────────────────────────────────────────────────────────────
+.env
+*.env
+
+# Scratch tree used by scripts/publish_gh_pages.sh
+/.ghp/
+/.ghp-seed/
+
+# ── Rendered video (regenerable by scripts/render_reel.py) ────────────────
+# Same reasoning as the forced orphan commit on gh-pages: this repo keeps
+# regenerable binaries out of its history on purpose. A 28 s 1080x1920 reel
+# is ~20 MB and every re-render is a new one.
+/media/
+
+# ── space-weather-live ─────────────────────────────────────────────────────
+# Source bundles live as GitHub Release assets, not in git history.
+*.zip
+/.staging-lookback/
+pipeline/.work/
+pipeline/Config/
+pipeline/Scripts/
+pipeline/Renders/
+pipeline/engine/events/

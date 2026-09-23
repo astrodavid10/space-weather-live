@@ -1,0 +1,31 @@
+name: keepalive
+
+# MANDATORY, not decorative: GitHub disables scheduled workflows in a repo with
+# no commit to the DEFAULT branch for 60 days.  data.yml only ever pushes to
+# gh-pages, which does not count -- so without this monthly commit the 4-hourly
+# data run would silently stop about two months after the last code change.
+on:
+  schedule:
+    - cron: "23 3 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Commit heartbeat
+        run: |
+          mkdir -p .github
+          date -u +%FT%TZ > .github/heartbeat
+          git config user.name  "swl-bot"
+          git config user.email "swl-bot@users.noreply.github.com"
+          git add .github/heartbeat
+          git diff --cached --quiet && echo "no change" && exit 0
+          git commit -m "chore: keepalive heartbeat (keeps scheduled workflows enabled)"
+          git push

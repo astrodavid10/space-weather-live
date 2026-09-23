@@ -1,0 +1,59 @@
+name: Deploy app
+
+# Builds the Vue app and publishes dist/ to gh-pages, PRESERVING the data/
+# subtree that the data.yml workflow maintains (the publish script excludes
+# data/ on app deploys). Shares the gh-pages-publish concurrency group with
+# data.yml so the two force-pushes can never interleave.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Use Yarn 4
+        run: |
+          corepack enable
+          yarn set version 4.12.0
+
+      # --immutable: this workflow PUBLISHES, so a yarn.lock that disagrees
+      # with package.json must stop the deploy rather than be repaired on the
+      # runner into a tree nobody has built locally.
+      - name: Yarn install
+        run: yarn install --immutable
+
+      - name: Lint
+        run: yarn lint
+
+      # Was missing entirely, so a type error only ever surfaced in the Build
+      # step's own .vue compilation (`tsc --noEmit` does not read .vue script
+      # blocks, but it does read every .ts the app is made of).
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish to gh-pages (preserving data/)
+        run: bash scripts/publish_gh_pages.sh dist ""
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
