@@ -40,7 +40,7 @@ export function createEarthOccluder(): Mesh {
 // DECREASING index. Their speed is illustrative (a steady ~14 s per traverse),
 // not a physical drift, and the layer hint says only that they show direction.
 
-const BEADS_PER_LINE = 6;
+const BEADS_PER_LINE = 4;
 const TRAVERSE_S = 14;
 
 export interface Pulses {
@@ -55,7 +55,10 @@ export function createPulses(L: LayerData): Pulses {
   const lengths = L.lineLengths as Uint32Array;
   const nLines = starts.length;
   const cap = nLines * BEADS_PER_LINE;
-  const pts = createStaticPoints(cap, { sizeRe: 0.22, minPx: 2.2, maxPx: 7, renderOrder: 45 });
+  // Near-white beads tinted by the line's hue, NORMAL-blended on top of the
+  // additive lines: an additive bead the colour of its own line vanished into it
+  // (David 2026-09-24: "the field pulses are not visible at all").
+  const pts = createStaticPoints(cap, { sizeRe: 0.32, minPx: 3.2, maxPx: 7.5, renderOrder: 45, look: "solid", alphaFloor: 0.75 });
   const { pos_lo: lo, pos_hi: hi, count: n } = L.meta;
   const lum = L.lum as Uint8Array;
 
@@ -91,11 +94,13 @@ export function createPulses(L: LayerData): Pulses {
           }
           const alA = L.alpha[p.a * n + i] / 255, alB = L.alpha[p.b * n + i] / 255;
           const lA = lum[p.a * n + i] / 255, lB = lum[p.b * n + i] / 255;
-          const l = Math.min(1, (lA + (lB - lA) * m) * 1.3 + 0.25);
+          const l = 0.75 + 0.25 * (lA + (lB - lA) * m);
           for (let d = 0; d < 3; d++) {
-            pts.colors[c * 3 + d] = Math.min(1, (L.color0[i * 3 + d] / 255) * l * 1.3);
+            const hue = L.color0[i * 3 + d] / 255;
+            pts.colors[c * 3 + d] = Math.min(1, (0.45 * hue + 0.55) * l);
           }
-          pts.alphas[c] = (alA + (alB - alA) * m) * 0.95;
+          // A bead on a hidden (crossfading) line hides with it.
+          pts.alphas[c] = alA + (alB - alA) * m;
           c++;
         }
       }

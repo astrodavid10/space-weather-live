@@ -24,10 +24,11 @@ const VERT = /* glsl */ `
   precision highp float;
   ${MORPH_GLSL}
   attribute float aAlphaA; attribute float aAlphaB;
-  varying vec3 vView; varying float vR; varying float vAlpha;
+  varying vec3 vView; varying float vR; varying float vAlpha; varying vec3 vPos;
   void main() {
     vec3 p = morphPos();
     vR = length(p);
+    vPos = p;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     vView = mv.xyz;
     vAlpha = mix(aAlphaA, aAlphaB, uMix);
@@ -38,13 +39,19 @@ const VERT = /* glsl */ `
 const FRAG = /* glsl */ `
   precision highp float;
   uniform vec3 uColor; uniform float uOpacity; uniform float uRim; uniform float uClipRe;
-  varying vec3 vView; varying float vR; varying float vAlpha;
+  uniform vec3 uAxis; uniform float uFadeFrom; uniform float uFadeTo; uniform float uFadeMin;
+  varying vec3 vView; varying float vR; varying float vAlpha; varying vec3 vPos;
   void main() {
     if (vR < uClipRe) { discard; }
+    // Down-tail fade: full strength sunward of uFadeFrom (R_E along the Sun
+    // axis), uFadeMin by uFadeTo. The dome ramps its shells from the nose to
+    // the tail the same way (boundaries.py OPACITY_NOSE -> OPACITY_TAIL).
+    float x = dot(vPos, uAxis);
+    float fade = mix(uFadeMin, 1.0, smoothstep(uFadeTo, uFadeFrom, x));
     vec3 n = normalize(cross(dFdx(vView), dFdy(vView)));
     float facing = abs(dot(n, normalize(-vView)));
     float rim = pow(1.0 - facing, 2.0);
-    float a = uOpacity * vAlpha * (0.35 + uRim * rim);
+    float a = uOpacity * vAlpha * fade * (0.35 + uRim * rim);
     gl_FragColor = vec4(uColor * (0.55 + 1.2 * rim), clamp(a, 0.0, 1.0));
   }
 `;
@@ -65,6 +72,9 @@ export interface ShellOptions {
   clipRe?: number;
   renderOrder: number;
   additive?: boolean;
+  /** Shared sunward axis (equatorial, unit) and the down-tail fade, R_E along it. */
+  axis?: Vector3;
+  fade?: { from: number; to: number; min: number };
 }
 
 /** One layer's shared morph (reused by the sheath, which draws the bow shock twice). */
@@ -83,6 +93,10 @@ export function createMorphShell(L: LayerData, opts: ShellOptions, shared?: { ge
     uOpacity: { value: opts.opacity },
     uRim: { value: opts.rim },
     uClipRe: { value: opts.clipRe ?? 0 },
+    uAxis: { value: opts.axis ?? new Vector3(1, 0, 0) },
+    uFadeFrom: { value: opts.fade?.from ?? 1e6 },
+    uFadeTo: { value: opts.fade?.to ?? -1e6 },
+    uFadeMin: { value: opts.fade?.min ?? 1 },
   };
   const mat = new ShaderMaterial({
     vertexShader: VERT, fragmentShader: FRAG, uniforms,

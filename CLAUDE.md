@@ -50,3 +50,8 @@ python -m pytest pipeline/tests -q
    both cameras (`goToPreset(id, true)`), and take a screenshot to force a frame.
 8. `wwt/magnetoStage.ts` computes directions in WWT's MIRRORED world: a cross product there is the
    negative of the physical one (dawn = cross3(north, sun) in world coords). See its comments.
+9. **`Float32BufferAttribute` COPIES its array.** Anything the CPU rewrites per frame (pulse beads,
+   the live OVATION oval) must use `BufferAttribute(array, n)`, or the GPU never sees the writes.
+10. **Wind parcels recycle.** A parcel leaving down-tail is relaunched upstream; with 10-30 min
+    keyframes the mix() flew it back past Earth. `points.ts` treats a >10 R_E SUNWARD step between
+    keyframes as a relaunch and crossfades in place (measured: 4.8% of Gannon steps, all > 50 R_E).

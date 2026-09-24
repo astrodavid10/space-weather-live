@@ -8,7 +8,7 @@
 // transform anywhere is how a shell ends up rotated against the field lines
 // (the dome lost three weeks to exactly that, bundle README "Three things").
 
-import { Group } from "three";
+import { Group, Vector3 } from "three";
 
 import type { Bundle, LayerData } from "../data/bundle";
 import { EQ_RE_TO_SCENE, gmstDeg } from "./frame";
@@ -62,14 +62,18 @@ export function createMagnetosphere(bundle: Bundle): Magnetosphere {
   const updaters: ((frameT: number) => void)[] = [];
   const resizers: ((w: number, h: number, dpr: number) => void)[] = [];
   const toggles: Partial<Record<LayerKey, (v: boolean) => void>> = {};
+  /** Sunward axis (equatorial, unit), updated per frame from the magnetopause
+   *  apex -- the axis the dome builds its shells around (aberration included).
+   *  Shared by reference with the shell fades and the wind's recycle cut. */
+  const axis = new Vector3(1, 0, 0);
 
   // --- surfaces ----------------------------------------------------------
-  const shell = (name: string, key: LayerKey, o: { opacity: number; rim: number; clipRe?: number; order: number; target?: number }): ReturnType<typeof createMorphShell> | null => {
+  const shell = (name: string, key: LayerKey, o: { opacity: number; rim: number; clipRe?: number; order: number; target?: number; fade?: { from: number; to: number; min: number } }): ReturnType<typeof createMorphShell> | null => {
     const L = get(name);
     if (!L || !L.faces) { return null; }
     const s = createMorphShell(L, {
       color: displayColor(L.color0.subarray(0, 3), o.target), opacity: o.opacity, rim: o.rim,
-      clipRe: o.clipRe, renderOrder: o.order,
+      clipRe: o.clipRe, renderOrder: o.order, axis, fade: o.fade,
     });
     root.add(s.object3d);
     updaters.push(s.update);
@@ -80,11 +84,14 @@ export function createMagnetosphere(bundle: Bundle): Magnetosphere {
   shell("RingCurrent", "ringCurrent", { opacity: 0.32, rim: 0.9, order: 10 });
   shell("Plasmasphere", "plasmasphere", { opacity: 0.22, rim: 0.9, clipRe: 1.02, order: 11 });
   shell("MagnetopauseShell", "magnetopause", { opacity: 0.13, rim: 1.1, order: 20 });
-  const bs = shell("BowShockShell", "bowShock", { opacity: 0.09, rim: 1.1, order: 21, target: 0.9 });
+  // The bow shock fades as it flares down-tail (David 2026-09-24): full at the
+  // nose, gone ~70 R_E behind Earth. The sheath fades the same way, but less.
+  const bs = shell("BowShockShell", "bowShock", { opacity: 0.1, rim: 1.1, order: 21, target: 0.9, fade: { from: 5, to: -70, min: 0 } });
   if (bs) {
     const L = get("BowShockShell") as LayerData;
     const sheath = createMorphShell(L, {
       color: displayColor(L.color0.subarray(0, 3), 0.55), opacity: 0.05, rim: 0.3, renderOrder: 22, additive: true,
+      axis, fade: { from: 0, to: -150, min: 0.2 },
     }, { geometry: bs.geometry, morph: bs.morph });
     root.add(sheath.object3d);
     updaters.push(sheath.update);
@@ -118,7 +125,12 @@ export function createMagnetosphere(bundle: Bundle): Magnetosphere {
   let wind: MorphPoints | null = null;
   const w = get("WindParticles");
   if (w) {
-    wind = createMorphPoints(w, { sizeRe: 0.45, minPx: 1.3, maxPx: 5, gain: 1.0, renderOrder: 40 });
+    // Small, opaque, crisp grains (David 2026-09-24), with the recycle cut so a
+    // parcel relaunched upstream never flies back past Earth (points.ts header).
+    wind = createMorphPoints(w, {
+      sizeRe: 0.26, minPx: 1.6, maxPx: 3.4, gain: 1.35, renderOrder: 40,
+      look: "solid", alphaFloor: 0.6, axis, recycleCut: true,
+    });
     root.add(wind.object3d);
     updaters.push(wind.update);
     resizers.push(wind.setRes);
@@ -167,6 +179,8 @@ export function createMagnetosphere(bundle: Bundle): Magnetosphere {
     root,
     present,
     update(frameT, nowS, sceneUnix) {
+      const nose = this.noseDirection(frameT);
+      if (nose) { axis.set(nose[0], nose[1], nose[2]); }
       for (const u of updaters) { u(frameT); }
       pulses?.update(frameT, nowS);
       dipole.setGmst(gmstDeg(sceneUnix));
