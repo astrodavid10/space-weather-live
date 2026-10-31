@@ -3,7 +3,7 @@
     <WorldWideTelescope wwt-namespace="wwt-swl" />
 
     <div v-if="!ready && !failed" class="mv-cover sol-3d-placeholder">
-      <div class="sol-spinner" aria-hidden="true"></div>
+      <loading-magnetosphere />
       <p class="sol-3d-text">Bringing Earth's magnetic field into three dimensions…</p>
     </div>
     <div v-if="failed" class="mv-cover sol-3d-placeholder" role="alert">
@@ -27,6 +27,7 @@ import { WWTAwareComponent, WWTComponent, wwtPinia } from "@wwtelescope/engine-p
 import { PropType, defineComponent, markRaw } from "vue";
 
 import { Bundle, loadBundle } from "../data/bundle";
+import LoadingMagnetosphere from "./LoadingMagnetosphere.vue";
 import type { PresetName, SourceRow } from "../data/index";
 import { eqToEcl, wwtToEcl } from "../three/frame";
 import { Magnetosphere, createMagnetosphere } from "../three/magnetosphere";
@@ -97,6 +98,7 @@ function frameForUnix(times: number[], unix: number): number {
 export default defineComponent({
   name: "MagnetoView3D",
   extends: WWTAwareComponent,
+  components: { "loading-magnetosphere": LoadingMagnetosphere },
 
   props: {
     source: { type: Object as PropType<SourceRow | null>, default: null },
