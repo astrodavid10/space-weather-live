@@ -1,15 +1,24 @@
-# Engine snapshot — NOT YET VENDORED
+# Engine snapshot
 
-This directory will hold a Digistar-free snapshot of the dome's `Engine/` (magneto/, dsexport/,
-livecore/, webexport/, tools/, vendor/, tests/, docs/). Requested from the magneto-stormy session
-on 2026-09-23; the request (contents, strip list, 14 questions) is section 9 of the project plan.
+A Digistar-free snapshot of the dome's `Engine/`, vendored verbatim from
+`MagnetoEngine_2026-10-31.zip` (the engine's own payload format, unpacked by `mag_setup.py`
+on the dome).
 
-Until it arrives `python -m pipeline lookback` exits cleanly with
-`last_attempt_status: engine_failed` and the published look-back keeps serving with its true age.
+- **Source:** magneto-stormy session payload, `build_id` 9d66d2a20bd1c31a, 2026-10-31
+- **Physics:** `physics_version` 7, `physics_tag` `lin2010-hybrid-aberrated-shocked-imf-drawnclip2d-seedsafe`
+  (`magneto/model/__init__.py`), the same physics as the published storms
+- **Integrity:** `payload.json` lists all 85 files with sha256; every one matched on vendoring
+- **Contents:** magneto/, dsexport/, livecore/, webexport/, tools/, vendor/ (IGRF 9-14 coefficients),
+  render_manifests/ (the dome's own renders, for timing reference), payload.json.
+  `events/` (the five curated storm timelines) is unpacked locally but gitignored; the look-back
+  fetches into `pipeline/.work/events`.
+- **Not included** (asked for in plan section 9): `requirements.txt`, `tests/`, `docs/`.
+  `pipeline/requirements.txt` covers every third-party import (numpy, scipy, astropy, requests,
+  geopack); the engine reads HAPI with its own `magneto/hapi_csv.py`.
+- **Local diffs:** none. The one interface fix lives on our side: `pipeline/lookback.py` passes
+  `--model t89` (the engine has no `--external` flag).
+- **Reference timing:** the dome rendered `lookback-20261005-20261007` (288 steps at 10 min) in
+  287 s, 2.7 GB of models (`render_manifests/`), on the dome machine's worker count.
 
-When it lands, record here:
-
-- source repo + commit + date
-- `physics_version` / `physics_tag` as render.py stamps them
-- what was stripped
-- local diffs (should be none)
+To update: unpack a new payload over this directory, re-run the sha256 check against its
+`payload.json`, update this file, then dispatch `data.yml` with `dry_run`.
