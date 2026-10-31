@@ -130,7 +130,7 @@ def run(a) -> int:
         sys.path.insert(0, str(ENGINE_DIR))
         from magneto.presets import SHOW  # noqa: E402
         cmd += SHOW.cli_args(workers=a.workers)
-        cmd += os.environ.get("ENGINE_RENDER_EXTRA", "--external t89").split()
+        cmd += os.environ.get("ENGINE_RENDER_EXTRA", "--model t89").split()
         if not a.force:
             cmd.append("--resume")
         _run(cmd, "render", a.workers, log)

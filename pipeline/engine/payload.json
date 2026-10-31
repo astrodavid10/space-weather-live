@@ -1,0 +1,348 @@
+{
+ "build_id": "9d66d2a20bd1c31a",
+ "files": {
+  "dsexport/__init__.py": {
+   "sha256": "89481dadea547e2ce22c7b9b21eb22a7c4543364f8239eb2fa0a5fd39694aad2",
+   "size": 300
+  },
+  "dsexport/ds.py": {
+   "sha256": "199e33e25c4f6d72fe6363335f67757e9fb9e958de1291888c31f8fae1138855",
+   "size": 131971
+  },
+  "dsexport/mesh.py": {
+   "sha256": "d2189204e60f313b882bbf15f45e5c387a3eede43b8c3ee78a3c8371d315fbc0",
+   "size": 34117
+  },
+  "dsexport/publish.py": {
+   "sha256": "2d3fe0eeae53958fc3161b2ab77a3d98e28eb694502855e10090c43453b019d3",
+   "size": 19761
+  },
+  "dsexport/vla.py": {
+   "sha256": "1deaf984954b3a44df1df6970e4263c19aed9631546d460c0494f116b4aca1b3",
+   "size": 15404
+  },
+  "events/2000-07-15_bastille/event.json": {
+   "sha256": "e664f2c4bee354b3646d7841fba38765af9cd84c1355d9fa200dabeedb28ea74",
+   "size": 3286
+  },
+  "events/2000-07-15_bastille/timeline.jsonl": {
+   "sha256": "d5259a93aecdb9dde2924ac65f88984a8f4b3ef8365e5804df5a1cb9731ea2c0",
+   "size": 424915
+  },
+  "events/2003-11-20_superstorm/event.json": {
+   "sha256": "250a0a9f5b4ad959f4842fcd4d1ae6c50a08825095c88130d752f3518c020536",
+   "size": 3819
+  },
+  "events/2003-11-20_superstorm/timeline.jsonl": {
+   "sha256": "3af36df833804f2150823cf7bb486705944f3326a8fc0768cc49721f91b57167",
+   "size": 372746
+  },
+  "events/2024-05-10_gannon/event.json": {
+   "sha256": "602483411c29b6c00ec530fb52462ff2d6b80eb64efe656368e72c909298603a",
+   "size": 6961
+  },
+  "events/2024-05-10_gannon/timeline.jsonl": {
+   "sha256": "81f06764ed733d7ae1402572d8a1cca96639598b1aa636f2b28b646bcdeb97e8",
+   "size": 460053
+  },
+  "events/2024-10-10_g4/event.json": {
+   "sha256": "12f5946b1cfe102afff10cb369bd55d0973e2c3e6f436e919e5ca9fd71a8b9c3",
+   "size": 5222
+  },
+  "events/2024-10-10_g4/timeline.jsonl": {
+   "sha256": "f1f2ce33f4f0635cb057059bdec141ac72c62731a31793d4260e186c37c00d36",
+   "size": 421451
+  },
+  "events/2026-01-19_kp9/event.json": {
+   "sha256": "284a41a57a0dea747f8eab9c30151a0f53bcb3f2cec2edb632b0351d2940f58d",
+   "size": 6160
+  },
+  "events/2026-01-19_kp9/timeline.jsonl": {
+   "sha256": "880de340339e3297167879b96bce450b0aa1e2ba26aff840c2ecf10573cf2ff5",
+   "size": 422375
+  },
+  "livecore/__init__.py": {
+   "sha256": "d9b61d46d3da45fb59e92f58696e496d38fa2599babb0bd12f71f12140a33d08",
+   "size": 85
+  },
+  "livecore/cache.py": {
+   "sha256": "e1e464643ce8cb752b8db7e70d1bfb39608347ec21fd29d3c2c69bbd32ab123b",
+   "size": 6367
+  },
+  "livecore/endpoints.py": {
+   "sha256": "4f171486aa56ea6999611da5eae454d4a42f598355f8837abea493bb37f301be",
+   "size": 12693
+  },
+  "livecore/poller.py": {
+   "sha256": "955e2d7bd0efd1ee5adf37c6e76c9cd94edf70a50da49541f0e4c78b8295371b",
+   "size": 9972
+  },
+  "livecore/state.py": {
+   "sha256": "f91456131b7a726e687f96c58b5a249261c6bbd51ae8498e14054ad1166dbfde",
+   "size": 11538
+  },
+  "magneto/__init__.py": {
+   "sha256": "6f416cf6bb327f364eff0f3db74b4f8529da994a9cb4ff3f1102afed38662496",
+   "size": 309
+  },
+  "magneto/daemon.py": {
+   "sha256": "8b3e002dc4237835c498a194a4a3c88bde0153ad81b01e6998e28840a954b86c",
+   "size": 45756
+  },
+  "magneto/events.py": {
+   "sha256": "62e48c245e4d3f02b909764c540f1e01290c2e3ff55ec66cd9fccef18a2544ce",
+   "size": 71442
+  },
+  "magneto/geo.py": {
+   "sha256": "90de20c01a105ceb685004222d7f6967bf0d6ca7744a76108ddc02fb1383b648",
+   "size": 21045
+  },
+  "magneto/hapi_csv.py": {
+   "sha256": "de8828968b0ad6c86480c3743f8b7d2dd86fcd930469bf824a9d080de49a9a35",
+   "size": 9819
+  },
+  "magneto/joblock.py": {
+   "sha256": "51db0cf626f49b5dddabfba1714b5a6118db217d83a3e6bc5024cec5ab0239f9",
+   "size": 5225
+  },
+  "magneto/model/__init__.py": {
+   "sha256": "66575b8264159f6cc30bef256685b5adac07a1e0593f1b22bed983b453eac6b7",
+   "size": 15112
+  },
+  "magneto/model/aurora.py": {
+   "sha256": "f0135725fe5405334a4f15d2afeceab85c7b00889bac4cb002544ed567887b76",
+   "size": 14934
+  },
+  "magneto/model/boundaries.py": {
+   "sha256": "2e29180b8f30c92a861c44072604cc11d28a3a679d2163347a7dfb2239628ccd",
+   "size": 60681
+  },
+  "magneto/model/fieldlines.py": {
+   "sha256": "ee4d48add36aa8f404311c1e35b88df6bbc47566e04636b2e6dbb02f1f09d922",
+   "size": 41939
+  },
+  "magneto/model/fieldpulses.py": {
+   "sha256": "fd7d552b279bebde858e1417ecfa67af6c28aef112aa1402c43c040478a54d8a",
+   "size": 7959
+  },
+  "magneto/model/imf.py": {
+   "sha256": "94ae7ee47b56da26c6fad6a509d4161a0489bc671e8bb623eca9943cf343be5c",
+   "size": 17145
+  },
+  "magneto/model/lin2010.py": {
+   "sha256": "4c7713a22589657349be6078d2b66ed732f9de49b978861759e1d6bcfc0aa073",
+   "size": 12070
+  },
+  "magneto/model/plasmasphere.py": {
+   "sha256": "4c48f09775a0000a4e6a9d6b982bec05279ad9f1ef0c5bb6a38e606ffb4ec626",
+   "size": 15253
+  },
+  "magneto/model/ringcurrent.py": {
+   "sha256": "89a330cb6e6c67d524dec0f9c7486fd45ff320a8874d0a00dcfbcfde274313a1",
+   "size": 13267
+  },
+  "magneto/model/shell_library.py": {
+   "sha256": "69a25f47a884bab0d0334e0e8a28762083f13bebad120ab997e9ceee3c3d9693",
+   "size": 8621
+  },
+  "magneto/model/ts05.py": {
+   "sha256": "5f9772c8eed1364a8d73148769ba360435cf7a77a555d86b7825941dc03428d8",
+   "size": 5182
+  },
+  "magneto/model/wind.py": {
+   "sha256": "e96ebecbe532176c138a6390651709eedfed70c2a6eb3214e6943c3562f08b6f",
+   "size": 48211
+  },
+  "magneto/model/zhang_paxton.py": {
+   "sha256": "1cf36dfdcc604bbed2f5d03cb8f85b5f5399e7968c5e5b0b77ba702449be0105",
+   "size": 14427
+  },
+  "magneto/offline.py": {
+   "sha256": "443eb79b5898f6e67efc41b3273b8e5a225be5152a657ba026d17ac6dbb81e64",
+   "size": 3690
+  },
+  "magneto/parallel.py": {
+   "sha256": "ab67875650c65b0c98dc0b2885b1236b791d55eb1fdd6ffd3f24fc525f558452",
+   "size": 23091
+  },
+  "magneto/paths.py": {
+   "sha256": "1c7c5ef2a4856cce2bb806a753df51840bbf634c9b8b91e13440327777da28d4",
+   "size": 5721
+  },
+  "magneto/plan.py": {
+   "sha256": "34ad0064aedceb023bcb523605328bf8aa47e86e9fd040ec7d7db678c9f22ee8",
+   "size": 30805
+  },
+  "magneto/presets.py": {
+   "sha256": "7e1a2425cf1882e67bbe88a971145754ab7729fecc0ccd18dbda7e4be65e905f",
+   "size": 8535
+  },
+  "magneto/render.py": {
+   "sha256": "2233ef837082535001917f37b113c29f649fcec9eed2da235749ce5c33de7427",
+   "size": 100452
+  },
+  "magneto/validate.py": {
+   "sha256": "e05086869fe695c45b33b6a9410392391a9f6f304c458a4f2cb5288f9864deb6",
+   "size": 30355
+  },
+  "render_manifests/2000-07-15_bastille.json": {
+   "sha256": "d5cb6cbe8007bf923700f659a28d62f37ca4480de6354d6ee954b5bdaadf2c6a",
+   "size": 194909
+  },
+  "render_manifests/2003-11-20_superstorm.json": {
+   "sha256": "ceabc7e673739cc266865aa45ad96aeced1d8d3f0987f255968ee6f5324138f1",
+   "size": 168316
+  },
+  "render_manifests/2024-05-10_gannon.json": {
+   "sha256": "d9e9590f4f2f301d1ba1329e170bec898a6c286a89cd8a87703593689111db1f",
+   "size": 203757
+  },
+  "render_manifests/2024-10-10_g4.json": {
+   "sha256": "fdc65cbfc90848979bd8478f07935b0fdf9bdb9c1ef4de50d2e3f5c9504a1563",
+   "size": 185148
+  },
+  "render_manifests/2026-01-19_kp9.json": {
+   "sha256": "97d4762221c618bf01f8ac8a221546fe9dabe6bda31f9152a3cfb4ec3c8dc126",
+   "size": 191112
+  },
+  "render_manifests/lookback-20261005-20261007.json": {
+   "sha256": "0491cdb3e6fd712600472fb40d456aa118aa1acac8f127f6de2ccb9ba087bbe0",
+   "size": 193607
+  },
+  "tools/build_payload.py": {
+   "sha256": "83fc93ab20578412490097c35c15384bd006b899f3bf6ca334137e76d8c07fd2",
+   "size": 8350
+  },
+  "tools/check_alignment.py": {
+   "sha256": "95278fe8fb1f9f2b23db75d40aab0b07e97a951ca2f0dddf43eeff0e0ef7d0c6",
+   "size": 11062
+  },
+  "tools/check_paths.py": {
+   "sha256": "db8fb79b115b59faa5f0ab8c10171d4d6dae46c6f47fff09505acb23bae67a38",
+   "size": 4150
+  },
+  "tools/check_physics.py": {
+   "sha256": "f29577c1af7d6a50fc493095c0d1e9eb8f53b1dad82b7ea79006da6195ed0a4e",
+   "size": 5640
+  },
+  "tools/dev_shell_probe.py": {
+   "sha256": "ba27eb987403a457065ad759f64e1d1107ae588d0c08e39d59db1995461ae0ac",
+   "size": 2124
+  },
+  "tools/fix_obj_frame.py": {
+   "sha256": "e86c0fe0dc8e9499caf36933013cda3ec2d51e500a704cca57d06b854f4e5129",
+   "size": 6294
+  },
+  "tools/native_pack_check.py": {
+   "sha256": "2f63717de2fca713afea9860bdc8e7d1e11874df36389acbe56fe63ccba7032e",
+   "size": 37457
+  },
+  "tools/normalize_model_layout.py": {
+   "sha256": "55cd5beadb05f40659953951afee9603a131022b720000a1b8481fcd3603d759",
+   "size": 4648
+  },
+  "tools/obj_to_glb.py": {
+   "sha256": "93dca243b6f2dbc9b0dd367069015963fbd75ad3f83c6a8c04c93f62df03433f",
+   "size": 11398
+  },
+  "tools/rebuild_all_events.py": {
+   "sha256": "2f0a61b4d23343c8f473ee95c07f83bbe9d186243a6d9b0cffc21ed05c9aa701",
+   "size": 15445
+  },
+  "tools/rename_models.py": {
+   "sha256": "43bd8e4099dd8107be204db2dbe0139d5e60d573a5ee7155c94cadbee6c0a8d7",
+   "size": 12798
+  },
+  "tools/reshell_event.py": {
+   "sha256": "f45107a5441b9323ec0ef371b219e3bb344ad44e24a03f01e303a0b844bc830a",
+   "size": 3842
+  },
+  "tools/resurface_plasma_ring.py": {
+   "sha256": "d60242f026b01d46eb58cfefdbbc2e9bd318708b5d9315eb4b42ac7fb1edd718",
+   "size": 6058
+  },
+  "tools/retime_event.py": {
+   "sha256": "37ba9a4537d95f0afbac0b8238e7568fe920f629f2a1b918360f09b7b1a92e05",
+   "size": 13447
+  },
+  "tools/run_lookback.py": {
+   "sha256": "8394b7dcc1aa968a18a2b8db43dc61bac8296362ab2929ccca3b78d747f0f5cc",
+   "size": 14034
+  },
+  "tools/shell_probe.py": {
+   "sha256": "829bcb532694bcfa55600d5bab11abda63eb2cd156f6c422d706e7ce984fd505",
+   "size": 13422
+  },
+  "tools/stamp_glb_yup.py": {
+   "sha256": "521aaad01d332e3e33100125a4fba7c16a6f169f786c7284f77fdb50a871acae",
+   "size": 5827
+  },
+  "tools/web_export.py": {
+   "sha256": "bd455c8010ed90ea0cbd93699ebe245fc891191d0a9129066c8d77f210aeafe4",
+   "size": 15327
+  },
+  "tools/write_shims.py": {
+   "sha256": "650bb1bed39176115008cfc5e8949e34041a9247af0dd54715343a4c550bc995",
+   "size": 83640
+  },
+  "vendor/igrf_coeffs/igrf10coeffs.txt": {
+   "sha256": "d35d047851db0c6e54d32126ac20ca3b7f910c15e11c1c899954f82c7b2b6e9d",
+   "size": 41496
+  },
+  "vendor/igrf_coeffs/igrf11coeffs.txt": {
+   "sha256": "aa7f39efb5bbddd75a27453b5487a306337ceba0f3c1213507940191a50d5652",
+   "size": 36306
+  },
+  "vendor/igrf_coeffs/igrf12coeffs.txt": {
+   "sha256": "a0eaf7451641b4423ab21cd3128a52787e3748c7971d9d11dd45c259c63bedce",
+   "size": 38673
+  },
+  "vendor/igrf_coeffs/igrf13coeffs.txt": {
+   "sha256": "460b8d8beb9b4df84febe4f0b639f0dd54dccfe8ff0970616287b015fa721425",
+   "size": 40639
+  },
+  "vendor/igrf_coeffs/igrf14coeffs.txt": {
+   "sha256": "8f8d88403028fc4ee92c4f38d97b46e0a87e2cfc496045b43c9e26c1d6b0903c",
+   "size": 42411
+  },
+  "vendor/igrf_coeffs/igrf9coeffs.txt": {
+   "sha256": "f4a7c944d025727798f0da11d490d4a64c6d186eb85ba4d8505ff37eedc2918b",
+   "size": 12300
+  },
+  "vendor/install_igrf.py": {
+   "sha256": "2225082077142ddc0158c377b24635087805cf0a4b2ea2e795b11aff3943b461",
+   "size": 1335
+  },
+  "webexport/__init__.py": {
+   "sha256": "f4e71add84946629482939f537d9a5c6819bd0873616ebef823574df0f888b23",
+   "size": 702
+  },
+  "webexport/bundle.py": {
+   "sha256": "32b18d1d8ef3dd9eafa43c578b9ac833e8b762669735c3e73b93acbe1ffc9888",
+   "size": 6339
+  },
+  "webexport/decimate.py": {
+   "sha256": "e767518ed6da660de84f1ef70ef278f62b38feb7c99bba97579d190c764ae490",
+   "size": 7169
+  },
+  "webexport/presets.py": {
+   "sha256": "5d1c4a5f92ec575a43c52bb42a997d2deec4bd7eda63082a27a8a86f32b0f699",
+   "size": 2779
+  },
+  "webexport/read_obj.py": {
+   "sha256": "ebfec67469e896aac7791ec1f42ad4c2b2f5798bcb2e0153a7221d647f0b438e",
+   "size": 7825
+  },
+  "webexport/read_vlc.py": {
+   "sha256": "76a59d17e9e0dd12f09ab2289ae363b1243babce9e120bbac821c06a3e17813a",
+   "size": 5319
+  },
+  "webexport/wwt.py": {
+   "sha256": "e6e2e00206534f82cd2c36c883df145404c48bd2d9712feb7f0ad8f7e3afe97a",
+   "size": 4564
+  }
+ },
+ "physics_version": 7,
+ "schema": 1,
+ "what": "Live Magnetosphere engine payload - unpacked to <package>\\Engine by Scripts\\mag_setup.py"
+}
