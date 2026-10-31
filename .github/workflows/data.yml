@@ -43,9 +43,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Field lines alone are ~82 CPU-min on 4 vCPU; run #1 measures the rest.
-    # Re-set to ~2.5x the measured time once known.
-    timeout-minutes: 150
+    # Measured 2026-10-31 (run 41238012458, 4 vCPU, 288 steps at T89): render
+    # 37.4 min, fetch + layout + export ~1 min. ~2.5x that.
+    timeout-minutes: 100
     env:
       OMP_NUM_THREADS: "1"
       OPENBLAS_NUM_THREADS: "1"

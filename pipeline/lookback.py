@@ -139,6 +139,13 @@ def run(a) -> int:
         _run(cmd, "render", a.workers, log)
         timing["render_s"] = round(time.time() - t, 1)
 
+        # The writers leave a render FLAT; tools.web_export reads the packaging layout
+        # (Models/<event>_<name>/<event>_<name>.<ext>, names from event_frames.json).
+        # The engine's own tools/run_lookback.py does this step in-process
+        # (rename_models.prepare_for_packaging); it is idempotent (stamped manifest).
+        _run([sys.executable, "-m", "tools.rename_models", "--root", str(render_root), "--convention"],
+             "layout", a.workers, log)
+
         stage = out / ".staging-lookback"
         shutil.rmtree(stage, ignore_errors=True)
         rows, export_s, notes = {}, {}, []
