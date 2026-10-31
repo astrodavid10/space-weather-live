@@ -4,13 +4,13 @@ name: data
 # the vendored dome engine (pipeline/engine), export mobile + desktop web
 # bundles, and publish data/lookback + data/index.json to gh-pages.
 #
-# The SCHEDULE is commented out until the engine snapshot is vendored and a
-# manual run has been timed (plan milestone M6). Uncomment it then. The cron is
+# Scheduled since 2026-10-31 (plan milestone M6): engine snapshot vendored, first
+# publish run timed at ~40 min on 4 vCPU. The cron is
 # NOT the staleness guarantee (sol measured a 74 min median delay and 13 h worst
 # gaps); freshness.yml, which reads the LIVE site, is.
 on:
-  # schedule:
-  #   - cron: "13 */6 * * *"
+  schedule:
+    - cron: "13 */6 * * *"
   workflow_dispatch:
     inputs:
       force:

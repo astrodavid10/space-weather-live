@@ -4,11 +4,10 @@ name: freshness
 # that can see a failed data run, a cron that never fired, or a wedged Pages
 # build (sol footguns 34/49). Opens one fixed-title issue; closes it when fresh.
 #
-# Disabled (dispatch-only) until the look-back pipeline is scheduled (M6);
-# until then the hand-published look-back is stale by design.
+# Scheduled since 2026-10-31, alongside the 6-hourly data run (M6).
 on:
-  # schedule:
-  #   - cron: "41 */2 * * *"
+  schedule:
+    - cron: "41 */2 * * *"
   workflow_dispatch:
 
 permissions:

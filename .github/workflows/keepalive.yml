@@ -2,7 +2,7 @@ name: keepalive
 
 # MANDATORY, not decorative: GitHub disables scheduled workflows in a repo with
 # no commit to the DEFAULT branch for 60 days.  data.yml only ever pushes to
-# gh-pages, which does not count -- so without this monthly commit the 4-hourly
+# gh-pages, which does not count -- so without this monthly commit the 6-hourly
 # data run would silently stop about two months after the last code change.
 on:
   schedule:
