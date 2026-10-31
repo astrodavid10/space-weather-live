@@ -104,7 +104,9 @@ def _fetch(days: float, end: Optional[str], feed: str) -> dict:
 
 
 def run(a) -> int:
-    out = Path(a.out)
+    # ABSOLUTE: the engine subprocesses run with cwd=ENGINE_DIR, so a relative
+    # --out (CI passes `dist-data`) sent web_export's bundle to pipeline/engine/dist-data.
+    out = Path(a.out).resolve()
     t0 = time.time()
     timing: Dict[str, object] = {"workers": a.workers}
     log = WORK_DIR / "render.log"
