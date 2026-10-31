@@ -55,3 +55,9 @@ python -m pytest pipeline/tests -q
 10. **Wind parcels recycle.** A parcel leaving down-tail is relaunched upstream; with 10-30 min
     keyframes the mix() flew it back past Earth. `points.ts` treats a >10 R_E SUNWARD step between
     keyframes as a relaunch and crossfades in place (measured: 4.8% of Gannon steps, all > 50 R_E).
+11. **Field lines are not evenly spaced.** Decimation leaves a 1-1-2 segment pattern, so anything
+    that moves along a line (pulse beads) must step in ARC LENGTH, not vertex index, or its speed
+    doubles every third segment (read as stutter). `extras.ts` caches cumulative arc per keyframe.
+12. **The repo's default branch is `gh-pages`**, but scheduled workflows only run from the default
+    branch, and the orphan gh-pages commit has no `.github/`. Until the default is `main`, no cron
+    (`keepalive`, `data`, `freshness`) can ever fire.
