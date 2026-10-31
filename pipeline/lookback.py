@@ -37,7 +37,10 @@ from .validate import Report, check_bundle, loader
 
 HERE = Path(__file__).resolve().parent
 RENDERS = WORK_DIR / "Renders"
-EVENTS = WORK_DIR / "events"
+# magneto.render has no events-root flag: it always reads ENGINE_DIR/events
+# (magneto/events.py EVENTS_DIR), so the look-back must be fetched there.
+# The directory is gitignored.
+EVENTS = ENGINE_DIR / "events"
 
 
 class StageError(RuntimeError):

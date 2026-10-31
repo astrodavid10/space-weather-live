@@ -78,7 +78,7 @@ jobs:
         with:
           path: |
             pipeline/.cache
-            pipeline/.work/events
+            pipeline/engine/events
           key: swl-cache-${{ github.run_id }}
           restore-keys: |
             swl-cache-
