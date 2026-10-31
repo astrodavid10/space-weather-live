@@ -100,4 +100,6 @@ jobs:
         working-directory: pipeline/engine
         run: |
           python vendor/install_igrf.py
-          python -m pytest tests -q
+          # The 2026-10-31 snapshot shipped without tests/ (engine/SNAPSHOT.md);
+          # the geopack import check above still runs.
+          if [ -d tests ]; then python -m pytest tests -q; else echo "engine snapshot has no tests/ - skipped"; fi
