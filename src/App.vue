@@ -165,6 +165,7 @@ import CameraStrip from "./components/CameraStrip.vue";
 import HudReadout from "./components/HudReadout.vue";
 import InfoModal from "./components/InfoModal.vue";
 import LayerPanel from "./components/LayerPanel.vue";
+import LoadingMagnetosphere from "./components/LoadingMagnetosphere.vue";
 import SourcePanel from "./components/SourcePanel.vue";
 import StoryCard from "./components/StoryCard.vue";
 import TimeBar from "./components/TimeBar.vue";
@@ -190,7 +191,7 @@ const chunkLoading = defineComponent({
   name: "MagnetoLoading",
   render() {
     return h("div", { class: "sol-3d-placeholder no-select" }, [
-      h("div", { class: "sol-spinner" }),
+      h(LoadingMagnetosphere),
       h("p", { class: "sol-3d-text" }, "3D view coming online…"),
     ]);
   },
