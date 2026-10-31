@@ -39,6 +39,15 @@ export function createEarthOccluder(): Mesh {
 // index runs ALONG -B (magneto/model/fieldpulses.py), so beads move toward
 // DECREASING index. Their speed is illustrative (a steady ~14 s per traverse),
 // not a physical drift, and the layer hint says only that they show direction.
+//
+// ARC-LENGTH, NOT VERTEX INDEX. The bundle's decimated lines are NOT evenly
+// spaced: Gannon desktop runs a repeating 1-1-2 pattern (0.23, 0.23, 0.46 R_E),
+// so a bead stepping a constant number of VERTICES per second doubled its speed
+// on every third segment -- roughly once a second, a rhythmic lurch that read as
+// a dropped-frame stutter (David 2026-10-31). Beads now sit at a constant
+// FRACTION OF ARC LENGTH, located separately on keyframe A and keyframe B and
+// then mixed, so the motion is continuous across keyframe swaps too. Cumulative
+// arc length is built lazily, once per keyframe (110 x 6720 floats on desktop).
 
 const BEADS_PER_LINE = 4;
 const TRAVERSE_S = 14;
@@ -59,44 +68,86 @@ export function createPulses(L: LayerData): Pulses {
   // additive lines: an additive bead the colour of its own line vanished into it
   // (David 2026-09-24: "the field pulses are not visible at all").
   const pts = createStaticPoints(cap, { sizeRe: 0.32, minPx: 3.2, maxPx: 7.5, renderOrder: 45, look: "solid", alphaFloor: 0.75 });
-  const { pos_lo: lo, pos_hi: hi, count: n } = L.meta;
+  const { pos_lo: lo, pos_hi: hi, count: n, keyframes: nK } = L.meta;
   const lum = L.lum as Uint8Array;
+  const sx = (hi[0] - lo[0]) / 65535, sy = (hi[1] - lo[1]) / 65535, sz = (hi[2] - lo[2]) / 65535;
 
-  function vert(k: number, i: number, out: number[]): void {
-    const b = (k * n + i) * 3;
-    out[0] = lo[0] + (L.pos[b] / 65535) * (hi[0] - lo[0]);
-    out[1] = lo[1] + (L.pos[b + 1] / 65535) * (hi[1] - lo[1]);
-    out[2] = lo[2] + (L.pos[b + 2] / 65535) * (hi[2] - lo[2]);
+  /** Normalised cumulative arc length (0 at a line's first vertex, 1 at its
+   *  last) for every vertex of every keyframe, filled on first use. */
+  const cum = new Float32Array(nK * n);
+  const built = new Uint8Array(nK);
+  function ensureArc(k: number): void {
+    if (built[k]) { return; }
+    built[k] = 1;
+    const P = L.pos;
+    for (let li = 0; li < nLines; li++) {
+      const s = starts[li], len = lengths[li];
+      if (len < 1) { continue; }
+      const o = k * n + s;
+      cum[o] = 0;
+      let acc = 0;
+      for (let j = 1; j < len; j++) {
+        const b = (o + j) * 3;
+        const dx = (P[b] - P[b - 3]) * sx, dy = (P[b + 1] - P[b - 2]) * sy, dz = (P[b + 2] - P[b - 1]) * sz;
+        acc += Math.sqrt(dx * dx + dy * dy + dz * dz);
+        cum[o + j] = acc;
+      }
+      // A degenerate (zero-length) line falls back to even vertex spacing.
+      for (let j = 1; j < len; j++) { cum[o + j] = acc > 0 ? cum[o + j] / acc : j / (len - 1); }
+    }
   }
-  const a0 = [0, 0, 0], a1 = [0, 0, 0], b0 = [0, 0, 0], b1 = [0, 0, 0];
+
+  /** Point at arc fraction f on line (s, len) of keyframe k -> out; returns the
+   *  vertex index i (segment i -> i+1) and writes the in-segment t to seg[0]. */
+  const seg = [0];
+  function along(k: number, s: number, len: number, f: number, out: number[]): number {
+    const o = k * n + s;
+    // Largest j in [0, len-2] with cum[o+j] <= f.
+    let a = 0, z = len - 1;
+    while (z - a > 1) {
+      const mid = (a + z) >> 1;
+      if (cum[o + mid] <= f) { a = mid; } else { z = mid; }
+    }
+    const c0 = cum[o + a], c1 = cum[o + a + 1];
+    const t = c1 > c0 ? Math.min(1, Math.max(0, (f - c0) / (c1 - c0))) : 0;
+    const b = (o + a) * 3;
+    const P = L.pos;
+    out[0] = lo[0] + (P[b] + (P[b + 3] - P[b]) * t) * sx;
+    out[1] = lo[1] + (P[b + 1] + (P[b + 4] - P[b + 1]) * t) * sy;
+    out[2] = lo[2] + (P[b + 2] + (P[b + 5] - P[b + 2]) * t) * sz;
+    seg[0] = t;
+    return s + a;
+  }
+  const pa = [0, 0, 0], pb = [0, 0, 0];
 
   return {
     points: pts,
     update(frameT, nowS) {
       const p = pairFor(L.meta.keyframe_map, frameT);
+      ensureArc(p.a); ensureArc(p.b);
       const phase = 1 - ((nowS / TRAVERSE_S) % 1);
+      const m = p.mix;
       let c = 0;
       for (let li = 0; li < nLines; li++) {
         const s = starts[li], len = lengths[li];
         if (len < 2) { continue; }
         for (let bead = 0; bead < BEADS_PER_LINE; bead++) {
           const f = (phase + bead / BEADS_PER_LINE) % 1;
-          const x = f * (len - 1);
-          const j = Math.min(len - 2, Math.floor(x));
-          const t = x - j;
-          const i = s + j;
-          vert(p.a, i, a0); vert(p.a, i + 1, a1); vert(p.b, i, b0); vert(p.b, i + 1, b1);
-          const m = p.mix;
-          for (let d = 0; d < 3; d++) {
-            const va = a0[d] + (a1[d] - a0[d]) * t;
-            const vb = b0[d] + (b1[d] - b0[d]) * t;
-            pts.positions[c * 3 + d] = va + (vb - va) * m;
-          }
-          const alA = L.alpha[p.a * n + i] / 255, alB = L.alpha[p.b * n + i] / 255;
-          const lA = lum[p.a * n + i] / 255, lB = lum[p.b * n + i] / 255;
+          const ia = along(p.a, s, len, f, pa);
+          const ta = seg[0];
+          const ib = along(p.b, s, len, f, pb);
+          const tb = seg[0];
+          for (let d = 0; d < 3; d++) { pts.positions[c * 3 + d] = pa[d] + (pb[d] - pa[d]) * m; }
+          // Alpha and luminance interpolated along the segment too, so a bead
+          // never flickers as it crosses a vertex.
+          const alA = (L.alpha[p.a * n + ia] + (L.alpha[p.a * n + ia + 1] - L.alpha[p.a * n + ia]) * ta) / 255;
+          const alB = (L.alpha[p.b * n + ib] + (L.alpha[p.b * n + ib + 1] - L.alpha[p.b * n + ib]) * tb) / 255;
+          const lA = (lum[p.a * n + ia] + (lum[p.a * n + ia + 1] - lum[p.a * n + ia]) * ta) / 255;
+          const lB = (lum[p.b * n + ib] + (lum[p.b * n + ib + 1] - lum[p.b * n + ib]) * tb) / 255;
           const l = 0.75 + 0.25 * (lA + (lB - lA) * m);
+          const ic = (ta < 0.5 ? ia : ia + 1) * 3;
           for (let d = 0; d < 3; d++) {
-            const hue = L.color0[i * 3 + d] / 255;
+            const hue = L.color0[ic + d] / 255;
             pts.colors[c * 3 + d] = Math.min(1, (0.45 * hue + 0.55) * l);
           }
           // A bead on a hidden (crossfading) line hides with it.
