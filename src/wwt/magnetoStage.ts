@@ -379,6 +379,25 @@ export function refitFraming(): void {
   lastPad = pad;
 }
 
+const SKY_IMAGESET = "Deep Star Maps 2020";
+
+/**
+ * The solar-system sky sphere. The engine hard-codes "Digitized Sky Survey (Color)"
+ * (WWTControl.renderOneFrame) and caches it in the private _milkyWayBackground,
+ * filling it only while null -- so pre-filling it swaps the sky. Deep Star Maps
+ * 2020 (NASA SVS, from Gaia/Hipparcos/Tycho) is a rendered star map: no plate
+ * seams, satellite trails or DSS colour patches. It is in the ImageSets6
+ * collection the engine loads before ready; if it ever is not, DSS stays.
+ */
+function useStarMapSky(control: WWTControl): void {
+  const sky = control.getImagesetByName(SKY_IMAGESET);
+  if (sky) {
+    (control as unknown as { _milkyWayBackground: unknown })._milkyWayBackground = sky;
+  } else {
+    console.warn("[swl] %s not in the image collection; the sky stays DSS", SKY_IMAGESET);
+  }
+}
+
 /** Enter solar-system mode, pin to Earth and frame the home preset. After waitForReady(). */
 export function initMagnetoStage(host: StageHost, when: Date): void {
   host.setClockSync(false);
@@ -390,6 +409,7 @@ export function initMagnetoStage(host: StageHost, when: Date): void {
   if (control) {
     control.setSolarSystemMinZoom(MIN_ZOOM);
     control.setSolarSystemMaxZoom(MAX_ZOOM);
+    useStarMapSky(control);
   }
   installEarthPin();
   // Planet positions exist only after the engine's first frame; the pin
