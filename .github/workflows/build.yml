@@ -20,19 +20,19 @@ permissions:
 jobs:
   # ── the Vue app ────────────────────────────────────────────────────────────
   app:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
           # The PR head on a pull_request; the pushed commit on a push.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Use Yarn 4
         run: |
@@ -60,19 +60,19 @@ jobs:
   # Parallel with `app`: the two tracks share only a data contract, so neither
   # needs the other's result to be worth having.
   pipeline:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     # The install of the pinned scientific stack is the slow part (~3-5 min);
     # 20 is generous for it and still bounds a hung download.
     timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
           cache: pip
