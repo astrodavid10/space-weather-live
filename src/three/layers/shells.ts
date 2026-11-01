@@ -8,29 +8,37 @@
 //
 // Shading is a view-dependent rim (Fresnel-ish) on a flat colour: a thin
 // translucent surface reads as an edge-on glow, which is how the dome draws it.
-// Normals come from screen-space derivatives of the view position, so they
-// are always right for the interpolated shape and cost no attribute; abs()
-// makes the result independent of the face winding and WWT's mirrored frame.
+// Normals are per-VERTEX, expanded per keyframe on the CPU and mixed like the
+// positions (shellGeometry.ts says why screen-space derivatives were dropped);
+// abs() makes the result independent of the face winding and WWT's mirrored frame.
+// A surface the camera is about to pass through fades out over the last couple
+// of Earth radii instead of filling the screen.
 //
 // The plasmasphere is an L-shell surface r = L cos^2(lat) that PINCHES TO THE
 // GEOCENTRE at the poles; fragments with r < uClipRe are discarded (bundle README).
 
-import { BufferAttribute, BufferGeometry, DoubleSide, Mesh, NormalBlending, AdditiveBlending, ShaderMaterial, Vector3 } from "three";
+import { AdditiveBlending, BufferGeometry, DoubleSide, Mesh, NormalBlending, ShaderMaterial, Vector3 } from "three";
 
 import type { LayerData } from "../../data/bundle";
-import { MORPH_GLSL, VertexMorph, boxUniforms } from "../morph";
+import { ShellMorph } from "./shellGeometry";
 
 const VERT = /* glsl */ `
   precision highp float;
-  ${MORPH_GLSL}
+  attribute vec3 aPosA; attribute vec3 aPosB;
+  attribute vec3 aNrmA; attribute vec3 aNrmB;
   attribute float aAlphaA; attribute float aAlphaB;
-  varying vec3 vView; varying float vR; varying float vAlpha; varying vec3 vPos;
+  uniform float uMix;
+  varying vec3 vView; varying vec3 vNormal; varying float vR; varying float vAlpha; varying vec3 vPos;
+  varying float vScale;
   void main() {
-    vec3 p = morphPos();
+    vec3 p = mix(aPosA, aPosB, uMix);
     vR = length(p);
     vPos = p;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     vView = mv.xyz;
+    vNormal = normalMatrix * mix(aNrmA, aNrmB, uMix);
+    // Scene units per Earth radius (the layer root is a rotation x uniform scale).
+    vScale = length(modelViewMatrix[0].xyz);
     vAlpha = mix(aAlphaA, aAlphaB, uMix);
     gl_Position = projectionMatrix * mv;
   }
@@ -40,7 +48,8 @@ const FRAG = /* glsl */ `
   precision highp float;
   uniform vec3 uColor; uniform float uOpacity; uniform float uRim; uniform float uClipRe;
   uniform vec3 uAxis; uniform float uFadeFrom; uniform float uFadeTo; uniform float uFadeMin;
-  varying vec3 vView; varying float vR; varying float vAlpha; varying vec3 vPos;
+  varying vec3 vView; varying vec3 vNormal; varying float vR; varying float vAlpha; varying vec3 vPos;
+  varying float vScale;
   void main() {
     if (vR < uClipRe) { discard; }
     // Down-tail fade: full strength sunward of uFadeFrom (R_E along the Sun
@@ -48,9 +57,15 @@ const FRAG = /* glsl */ `
     // the tail the same way (boundaries.py OPACITY_NOSE -> OPACITY_TAIL).
     float x = dot(vPos, uAxis);
     float fade = mix(uFadeMin, 1.0, smoothstep(uFadeTo, uFadeFrom, x));
-    vec3 n = normalize(cross(dFdx(vView), dFdy(vView)));
-    float facing = abs(dot(n, normalize(-vView)));
-    float rim = pow(1.0 - facing, 2.0);
+    // Near-camera fade, in Earth radii from the eye.
+    float dist = length(vView);
+    fade *= smoothstep(0.3, 2.0, dist / max(vScale, 1e-30));
+    // Guarded normalisation: a zero vector must never become NaN (NaN paints white).
+    float nl = length(vNormal);
+    vec3 n = nl > 0.0 ? vNormal / nl : vec3(0.0, 0.0, 1.0);
+    vec3 v = dist > 0.0 ? -vView / dist : vec3(0.0, 0.0, 1.0);
+    float facing = clamp(abs(dot(n, v)), 0.0, 1.0);
+    float rim = (1.0 - facing) * (1.0 - facing);
     float a = uOpacity * vAlpha * fade * (0.35 + uRim * rim);
     gl_FragColor = vec4(uColor * (0.55 + 1.2 * rim), clamp(a, 0.0, 1.0));
   }
@@ -78,17 +93,16 @@ export interface ShellOptions {
 }
 
 /** One layer's shared morph (reused by the sheath, which draws the bow shock twice). */
-export function createMorphShell(L: LayerData, opts: ShellOptions, shared?: { geometry: BufferGeometry; morph: VertexMorph }): MorphShell & { geometry: BufferGeometry; morph: VertexMorph } {
-  let geometry: BufferGeometry, morph: VertexMorph;
+export function createMorphShell(L: LayerData, opts: ShellOptions, shared?: { geometry: BufferGeometry; morph: ShellMorph }): MorphShell & { geometry: BufferGeometry; morph: ShellMorph } {
+  let geometry: BufferGeometry, morph: ShellMorph;
   if (shared) {
     ({ geometry, morph } = shared);
   } else {
     geometry = new BufferGeometry();
-    morph = new VertexMorph(L, geometry);
-    geometry.setIndex(new BufferAttribute(L.faces as Uint16Array, 1));
+    morph = new ShellMorph(L, geometry);
   }
   const uniforms = {
-    ...boxUniforms(L),
+    uMix: { value: 0 },
     uColor: { value: new Vector3(...opts.color) },
     uOpacity: { value: opts.opacity },
     uRim: { value: opts.rim },
