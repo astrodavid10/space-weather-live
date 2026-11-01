@@ -61,3 +61,12 @@ python -m pytest pipeline/tests -q
 12. **The repo's default branch is `gh-pages`**, but scheduled workflows only run from the default
     branch, and the orphan gh-pages commit has no `.github/`. Until the default is `main`, no cron
     (`keepalive`, `data`, `freshness`) can ever fire.
+13. **Shell normals are per-VERTEX, never screen-space derivatives.** `cross(dFdx, dFdy)` of the
+    view position was flat-faceted, and when the camera crossed a shell neighbouring pixels quantised
+    to the same position: zero cross product, NaN, a white screen. `layers/shellGeometry.ts` expands
+    each keyframe on the CPU (normals + a 3x/2x refinement of the apex-and-rings grid). The ring
+    spacing jumps from 0.6 R_E (dayside) to 10 R_E (tail), so the spline must be CENTRIPETAL
+    Catmull-Rom: the uniform one folds the surface at x = 0 (a bright line across the bow shock).
+14. **The solar-system sky is the engine's private `_milkyWayBackground`.** WWTControl hard-codes
+    "Digitized Sky Survey (Color)" and fills that field only while it is null; `magnetoStage.ts`
+    pre-fills it with "Deep Star Maps 2020" (`getImagesetByName` is a substring match).
