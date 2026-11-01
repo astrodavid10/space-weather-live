@@ -42,7 +42,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     # Measured 2026-10-31 (run 41238012458, 4 vCPU, 288 steps at T89): render
     # 37.4 min, fetch + layout + export ~1 min. ~2.5x that.
     timeout-minutes: 100
@@ -52,9 +52,9 @@ jobs:
       MKL_NUM_THREADS: "1"
       PYTHONUNBUFFERED: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
@@ -74,7 +74,7 @@ jobs:
       # Rolling cache: the run_id key always misses so the cache is re-saved;
       # restore-keys pull the newest previous copy (sol's idiom).
       - name: Restore pipeline cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             pipeline/.cache
@@ -206,7 +206,7 @@ jobs:
       # gh-pages keeps no history, so the 7-day artifact is the audit trail.
       - name: Upload artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lookback-and-logs
           path: |
