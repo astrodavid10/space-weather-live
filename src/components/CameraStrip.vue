@@ -61,6 +61,7 @@ export default defineComponent({
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
+  justify-content: center;   // short labels ("Wide") sit in a 60px min-width
   gap: 0.35rem;
   min-height: 40px;
   min-width: 60px;
