@@ -1,0 +1,1215 @@
+{
+ "event_id": "2000-07-15_bastille",
+ "title": "Bastille Day Storm - July 2000 (1140 km/s)",
+ "preset": {
+  "name": "mobile",
+  "keyframes": 60,
+  "keep_lines": 72,
+  "keep_line_verts": 32,
+  "shell_ring_stride": 2,
+  "shell_phi_stride": 2,
+  "keep_wind": 1200,
+  "keep_ring": 1000,
+  "keep_plasma": 800,
+  "keep_aurora": 2760,
+  "aurora_keyframes": 24,
+  "keep_imf_lines": 18,
+  "keep_imf_verts": 48,
+  "layers": [
+   "FieldLines",
+   "MagnetopauseShell",
+   "BowShockShell",
+   "RingCurrent",
+   "Plasmasphere",
+   "IMFLines",
+   "WindParticles",
+   "AuroraOval"
+  ]
+ },
+ "units": {
+  "length": "earth_radii",
+  "re_km": 6371.0,
+  "frame": "J2000 geocentric equatorial (+Z north celestial pole, +X vernal equinox) - the same axes as WWT's sky frame",
+  "note": "Earth is at the origin. Positions dequantise as p = pos_lo + pos/65535 * (pos_hi - pos_lo)."
+ },
+ "keyframes": {
+  "count": 61,
+  "playback_s": [
+   0.0,
+   63.2,
+   64.8,
+   66.4,
+   68.0,
+   69.6,
+   71.2,
+   72.8,
+   74.4,
+   76.0,
+   77.6,
+   82.4,
+   84.0,
+   85.6,
+   87.2,
+   88.8,
+   90.4,
+   92.0,
+   93.6,
+   95.2,
+   96.8,
+   98.4,
+   100.0,
+   101.6,
+   103.2,
+   104.8,
+   106.4,
+   108.0,
+   109.6,
+   111.2,
+   112.8,
+   179.2,
+   180.8,
+   182.4,
+   184.0,
+   185.6,
+   187.2,
+   188.8,
+   190.4,
+   192.0,
+   197.6,
+   199.2,
+   200.8,
+   202.4,
+   204.0,
+   205.6,
+   207.2,
+   208.8,
+   210.4,
+   212.0,
+   213.6,
+   215.2,
+   216.8,
+   218.4,
+   220.0,
+   221.6,
+   223.2,
+   224.8,
+   226.4,
+   228.0,
+   229.6
+  ],
+  "epoch": [
+   "2000-07-15T00:05:00Z",
+   "2000-07-15T13:15:00Z",
+   "2000-07-15T13:35:00Z",
+   "2000-07-15T13:55:00Z",
+   "2000-07-15T14:15:00Z",
+   "2000-07-15T14:35:00Z",
+   "2000-07-15T14:55:00Z",
+   "2000-07-15T15:15:00Z",
+   "2000-07-15T15:35:00Z",
+   "2000-07-15T15:55:00Z",
+   "2000-07-15T16:15:00Z",
+   "2000-07-15T17:15:00Z",
+   "2000-07-15T17:35:00Z",
+   "2000-07-15T17:55:00Z",
+   "2000-07-15T18:15:00Z",
+   "2000-07-15T18:35:00Z",
+   "2000-07-15T18:55:00Z",
+   "2000-07-15T19:15:00Z",
+   "2000-07-15T19:35:00Z",
+   "2000-07-15T19:55:00Z",
+   "2000-07-15T20:15:00Z",
+   "2000-07-15T20:35:00Z",
+   "2000-07-15T20:55:00Z",
+   "2000-07-15T21:15:00Z",
+   "2000-07-15T21:35:00Z",
+   "2000-07-15T21:55:00Z",
+   "2000-07-15T22:15:00Z",
+   "2000-07-15T22:35:00Z",
+   "2000-07-15T22:55:00Z",
+   "2000-07-15T23:15:00Z",
+   "2000-07-15T23:35:00Z",
+   "2000-07-16T13:25:00Z",
+   "2000-07-16T13:45:00Z",
+   "2000-07-16T14:05:00Z",
+   "2000-07-16T14:25:00Z",
+   "2000-07-16T14:45:00Z",
+   "2000-07-16T15:05:00Z",
+   "2000-07-16T15:25:00Z",
+   "2000-07-16T15:45:00Z",
+   "2000-07-16T16:05:00Z",
+   "2000-07-16T17:15:00Z",
+   "2000-07-16T17:35:00Z",
+   "2000-07-16T17:55:00Z",
+   "2000-07-16T18:15:00Z",
+   "2000-07-16T18:35:00Z",
+   "2000-07-16T18:55:00Z",
+   "2000-07-16T19:15:00Z",
+   "2000-07-16T19:35:00Z",
+   "2000-07-16T19:55:00Z",
+   "2000-07-16T20:15:00Z",
+   "2000-07-16T20:35:00Z",
+   "2000-07-16T20:55:00Z",
+   "2000-07-16T21:15:00Z",
+   "2000-07-16T21:35:00Z",
+   "2000-07-16T21:55:00Z",
+   "2000-07-16T22:15:00Z",
+   "2000-07-16T22:35:00Z",
+   "2000-07-16T22:55:00Z",
+   "2000-07-16T23:15:00Z",
+   "2000-07-16T23:35:00Z",
+   "2000-07-16T23:55:00Z"
+  ],
+  "hud": [
+   "Wind 737 km/s|Bz +3.0 nT|n 8.6 /cc|Kp 4.7|2000-07-15 00:05 UT|OMNI - REPLAY",
+   "Wind 640 km/s|Bz -7.0 nT|n 4.8 /cc|Kp 8.0|2000-07-15 13:15 UT|OMNI - REPLAY",
+   "Wind 645 km/s|Bz -4.9 nT|n 3.3 /cc|Kp 8.0|2000-07-15 13:35 UT|OMNI - REPLAY",
+   "Wind 656 km/s|Bz -4.6 nT|n 1.3 /cc|Kp 8.0|2000-07-15 13:55 UT|OMNI - REPLAY",
+   "Wind 625 km/s|Bz -4.8 nT|n 4.3 /cc|Kp 8.0|2000-07-15 14:15 UT|OMNI - REPLAY",
+   "Wind 623 km/s|Bz -2.5 nT|n 9.1 /cc|Kp 8.0|2000-07-15 14:35 UT|OMNI - REPLAY",
+   "Wind 900 km/s|Bz +18.4 nT|n 18.3 /cc|Kp 8.0|2000-07-15 14:55 UT|OMNI - REPLAY",
+   "Wind 888 km/s|Bz +31.3 nT|n 13.9 /cc|Kp 8.0|2000-07-15 15:15 UT|OMNI - REPLAY",
+   "Wind 919 km/s|Bz -4.4 nT|n 4.2 /cc|Kp 8.7|2000-07-15 15:35 UT|OMNI - REPLAY",
+   "Wind 1012 km/s|Bz -15.1 nT|n 3.3 /cc|Kp 8.7|2000-07-15 15:55 UT|OMNI - REPLAY",
+   "Wind 990 km/s|Bz -16.3 nT|n 3.2 /cc|Kp 8.7|2000-07-15 16:15 UT|OMNI - REPLAY",
+   "Wind 1012 km/s|Bz +6.9 nT|n 10.2 /cc|Kp 8.7|2000-07-15 17:15 UT|OMNI - REPLAY",
+   "Wind 990 km/s|Bz -10.6 nT|n 12.0 /cc|Kp 8.7|2000-07-15 17:35 UT|OMNI - REPLAY",
+   "Wind 961 km/s|Bz -9.9 nT|n 8.9 /cc|Kp 8.7|2000-07-15 17:55 UT|OMNI - REPLAY",
+   "Wind 950 km/s|Bz +0.8 nT|n 9.5 /cc|Kp 8.7|2000-07-15 18:15 UT|OMNI - REPLAY",
+   "Wind 969 km/s|Bz -16.6 nT|n 12.9 /cc|Kp 9.0|2000-07-15 18:35 UT|OMNI - REPLAY",
+   "Wind 984 km/s|Bz +13.5 nT|n 12.4 /cc|Kp 9.0|2000-07-15 18:55 UT|OMNI - REPLAY",
+   "Wind 952 km/s|Bz -37.1 nT|n 17.7 /cc|Kp 9.0|2000-07-15 19:15 UT|OMNI - REPLAY",
+   "Wind 1008 km/s|Bz -30.4 nT|n 11.1 /cc|Kp 9.0|2000-07-15 19:35 UT|OMNI - REPLAY",
+   "Wind 1028 km/s|Bz -59.8 nT|n 3.7 /cc|Kp 9.0|2000-07-15 19:55 UT|OMNI - REPLAY",
+   "Wind 1072 km/s|Bz -56.6 nT|n 16.0 /cc|Kp 9.0|2000-07-15 20:15 UT|OMNI - REPLAY",
+   "Wind 1103 km/s|Bz -48.2 nT|n 3.8 /cc|Kp 9.0|2000-07-15 20:35 UT|OMNI - REPLAY",
+   "Wind 1090 km/s|Bz -47.4 nT|n 8.2 /cc|Kp 9.0|2000-07-15 20:55 UT|OMNI - REPLAY",
+   "Wind 1094 km/s|Bz -35.5 nT|n 9.2 /cc|Kp 9.0|2000-07-15 21:15 UT|OMNI - REPLAY",
+   "Wind 1121 km/s|Bz -22.3 nT|n 7.4 /cc|Kp 8.7|2000-07-15 21:35 UT|OMNI - REPLAY",
+   "Wind 1132 km/s|Bz -17.6 nT|n 7.1 /cc|Kp 8.7|2000-07-15 21:55 UT|OMNI - REPLAY",
+   "Wind 1111 km/s|Bz -12.9 nT|n 4.6 /cc|Kp 8.7|2000-07-15 22:15 UT|OMNI - REPLAY",
+   "Wind 1088 km/s|Bz -13.6 nT|n 2.1 /cc|Kp 8.7|2000-07-15 22:35 UT|OMNI - REPLAY",
+   "Wind 1070 km/s|Bz -10.3 nT|n 8.6 /cc|Kp 8.7|2000-07-15 22:55 UT|OMNI - REPLAY",
+   "Wind 1088 km/s|Bz -7.8 nT|n 6.0 /cc|Kp 8.7|2000-07-15 23:15 UT|OMNI - REPLAY",
+   "Wind 1073 km/s|Bz -10.1 nT|n 10.4 /cc|Kp 8.7|2000-07-15 23:35 UT|OMNI - REPLAY",
+   "Wind 792 km/s|Bz +13.1 nT|n 4.2 /cc|Kp 4.7|2000-07-16 13:25 UT|OMNI - REPLAY",
+   "Wind 790 km/s|Bz +14.3 nT|n 1.6 /cc|Kp 4.7|2000-07-16 13:45 UT|OMNI - REPLAY",
+   "Wind 781 km/s|Bz +12.8 nT|n 1.7 /cc|Kp 4.7|2000-07-16 14:05 UT|OMNI - REPLAY",
+   "Wind 780 km/s|Bz +12.1 nT|n 1.8 /cc|Kp 4.7|2000-07-16 14:25 UT|OMNI - REPLAY",
+   "Wind 818 km/s|Bz +10.0 nT|n 1.2 /cc|Kp 4.7|2000-07-16 14:45 UT|OMNI - REPLAY",
+   "Wind 821 km/s|Bz +9.4 nT|n 1.4 /cc|Kp 4.7|2000-07-16 15:05 UT|OMNI - REPLAY",
+   "Wind 751 km/s|Bz +9.4 nT|n 0.8 /cc|Kp 4.7|2000-07-16 15:25 UT|OMNI - REPLAY",
+   "Wind 762 km/s|Bz +8.8 nT|n 1.0 /cc|Kp 3.0|2000-07-16 15:45 UT|OMNI - REPLAY",
+   "Wind 751 km/s|Bz +8.2 nT|n 1.5 /cc|Kp 3.0|2000-07-16 16:05 UT|OMNI - REPLAY",
+   "Wind 761 km/s|Bz +7.0 nT|n 1.3 /cc|Kp 3.0|2000-07-16 17:15 UT|OMNI - REPLAY",
+   "Wind 730 km/s|Bz +6.6 nT|n 0.9 /cc|Kp 3.0|2000-07-16 17:35 UT|OMNI - REPLAY",
+   "Wind 718 km/s|Bz +5.4 nT|n 1.3 /cc|Kp 3.0|2000-07-16 17:55 UT|OMNI - REPLAY",
+   "Wind 751 km/s|Bz +5.6 nT|n 1.6 /cc|Kp 3.0|2000-07-16 18:15 UT|OMNI - REPLAY",
+   "Wind 764 km/s|Bz +6.0 nT|n 1.4 /cc|Kp 2.0|2000-07-16 18:35 UT|OMNI - REPLAY",
+   "Wind 749 km/s|Bz +5.9 nT|n 0.8 /cc|Kp 2.0|2000-07-16 18:55 UT|OMNI - REPLAY",
+   "Wind 753 km/s|Bz +4.9 nT|n 1.1 /cc|Kp 2.0|2000-07-16 19:15 UT|OMNI - REPLAY",
+   "Wind 713 km/s|Bz +2.4 nT|n 1.4 /cc|Kp 2.0|2000-07-16 19:35 UT|OMNI - REPLAY",
+   "Wind 707 km/s|Bz +0.6 nT|n 0.7 /cc|Kp 2.0|2000-07-16 19:55 UT|OMNI - REPLAY",
+   "Wind 761 km/s|Bz +4.2 nT|n 0.6 /cc|Kp 2.0|2000-07-16 20:15 UT|OMNI - REPLAY",
+   "Wind 753 km/s|Bz +3.7 nT|n 2.3 /cc|Kp 2.0|2000-07-16 20:35 UT|OMNI - REPLAY",
+   "Wind 759 km/s|Bz +3.4 nT|n 0.6 /cc|Kp 2.0|2000-07-16 20:55 UT|OMNI - REPLAY",
+   "Wind 766 km/s|Bz +3.9 nT|n 0.7 /cc|Kp 2.0|2000-07-16 21:15 UT|OMNI - REPLAY",
+   "Wind 758 km/s|Bz +3.9 nT|n 0.5 /cc|Kp 1.7|2000-07-16 21:35 UT|OMNI - REPLAY",
+   "Wind 750 km/s|Bz +3.2 nT|n 1.7 /cc|Kp 1.7|2000-07-16 21:55 UT|OMNI - REPLAY",
+   "Wind 781 km/s|Bz +3.9 nT|n 0.8 /cc|Kp 1.7|2000-07-16 22:15 UT|OMNI - REPLAY",
+   "Wind 715 km/s|Bz +3.5 nT|n 1.8 /cc|Kp 1.7|2000-07-16 22:35 UT|OMNI - REPLAY",
+   "Wind 730 km/s|Bz +3.3 nT|n 1.3 /cc|Kp 1.7|2000-07-16 22:55 UT|OMNI - REPLAY",
+   "Wind 723 km/s|Bz +3.0 nT|n 1.1 /cc|Kp 1.7|2000-07-16 23:15 UT|OMNI - REPLAY",
+   "Wind 730 km/s|Bz +2.8 nT|n 1.1 /cc|Kp 1.7|2000-07-16 23:35 UT|OMNI - REPLAY",
+   "Wind 731 km/s|Bz +2.5 nT|n 0.9 /cc|Kp 1.7|2000-07-16 23:55 UT|OMNI - REPLAY"
+  ]
+ },
+ "source": {
+  "step_min": 10.0,
+  "window": {
+   "start": "2000-07-15T00:05:00Z",
+   "stop": "2000-07-16T23:55:00Z"
+  },
+  "model": "ts05",
+  "n_steps_original": 288,
+  "plan_digest": "99fa8c97751eb1baec73964a135c85518172baeb",
+  "built_from": "..\\Renders\\storm_2000-07-15_bastille"
+ },
+ "provenance": {
+  "physics_version": 7,
+  "physics_tag": "lin2010-hybrid-aberrated-shocked-imf-drawnclip2d-seedsafe",
+  "magnetopause": "Lin et al. 2010 (doi:10.1029/2009JA014235) 3-D surface - cusp indentations, dipole-tilt and dawn-dusk asymmetry - on a subsolar distance blended C2 to Shue et al. 1998 outside Lin's fitted box (Bz -15..+5 nT, Pd 1..16 nPa), where Lin's inputs are clamped",
+  "bow_shock": "Slavin & Holzer 1981 conic, Farris & Russell 1994 standoff, ratio bounded at BS_RATIO_MAX, radius scaled per azimuth by the magnetopause's own shape so the sheath cannot invert",
+  "aberration": "applied to the magnetopause evaluation and the wind's upstream direction only - Tsyganenko field lines stay in plain GSM, the frame they are fitted in",
+  "aurora": "Modeled auroral oval - Kp 9 (statistical Kp model, not an observation)",
+  "key_moments": "KEY MOMENTS: shock 14:45 UT 15 Jul (6 -> 24 nPa) | Bz min -60 nT at 19:55 UT 15 Jul | wind peaks 1137 km/s 22:05 UT 15 Jul | Kp 9 from 18:35 UT 15 Jul | SYM-H min -326 nT at 21:55 UT 15 Jul | Bz below -10 nT for 6 h",
+  "talking_points": [
+   "WATCH: the CME shock from the X5.7 flare hits L1 about 14:37 UT on 15 Jul - the pressure jumps roughly tenfold and the magnetopause and bow shock crush inward within a step",
+   "PHYSICS: Bz swings to about -60 nT. Southward IMF reconnects at the nose, dayside field lines peel back into the tail - watch the tail lines stretch and the oval expand",
+   "IMPACT: Kp 9, Dst about -300 nT. Aurora seen as far south as Texas - the ASCA X-ray satellite lost attitude control and never observed again, radio and GPS were disrupted"
+  ],
+  "decimation": "Every layer is SUBSAMPLED for the web, never resampled: vertices are a strict subset of the rendered ones. Densities are therefore lower than the physics produced, and should be described as a subsample rather than as the modelled density.",
+  "occluded_points": "Dot layers drop points that never leave 1 R_E: they sit inside Earth and are occluded in any renderer that draws it. Measured on Gannon: the Plasmasphere layer fills a solid ball from the geocentre outward, so 57% of its dots were in that category at the storm peak. Per-layer counts are in layers[].occluded_dropped.",
+  "field_pulses": "Not shipped. Beads gliding along +B are reconstructed in the shader from the FieldLines vertices they ride on.",
+  "surfaces": "MagnetopauseShell, BowShockShell, RingCurrent and Plasmasphere are triangulated surfaces (kind 'mesh', a faces block per layer, color0 = the dome's holder colour). The ring current is a torus whose strength is the measured SYM-H energy but whose radius is climatology; the plasmasphere radius IS the measurement (Carpenter & Anderson 1992).",
+  "credits": "Engine/docs/CREDITS.html carries the full reference list with DOIs."
+ },
+ "schema": 1,
+ "binary": "2000-07-15_bastille.bin",
+ "binary_bytes": 4723988,
+ "layers": [
+  {
+   "name": "FieldLines",
+   "kind": "lines",
+   "count": 2304,
+   "keyframes": 61,
+   "pos_lo": [
+    -23.689205169677734,
+    -57.37084197998047,
+    -30.581989288330078
+   ],
+   "pos_hi": [
+    41.77341842651367,
+    11.323121070861816,
+    21.102155685424805
+   ],
+   "blocks": {
+    "pos": {
+     "offset": 0,
+     "length": 843264,
+     "dtype": "uint16",
+     "shape": [
+      61,
+      2304,
+      3
+     ]
+    },
+    "alpha": {
+     "offset": 843264,
+     "length": 140544,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      2304
+     ]
+    },
+    "color0": {
+     "offset": 983808,
+     "length": 6912,
+     "dtype": "uint8",
+     "shape": [
+      2304,
+      3
+     ]
+    },
+    "lum": {
+     "offset": 990720,
+     "length": 140544,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      2304
+     ]
+    },
+    "line_starts": {
+     "offset": 1131264,
+     "length": 288,
+     "dtype": "uint32",
+     "shape": [
+      72
+     ]
+    },
+    "line_lengths": {
+     "offset": 1131552,
+     "length": 288,
+     "dtype": "uint32",
+     "shape": [
+      72
+     ]
+    }
+   },
+   "n_lines": 72,
+   "keyframe_map": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ]
+  },
+  {
+   "name": "MagnetopauseShell",
+   "kind": "mesh",
+   "count": 1046,
+   "keyframes": 61,
+   "pos_lo": [
+    -16.463346481323242,
+    -188.4784698486328,
+    -100.181884765625
+   ],
+   "pos_hi": [
+    110.9472885131836,
+    12.679869651794434,
+    18.01523780822754
+   ],
+   "blocks": {
+    "pos": {
+     "offset": 1131840,
+     "length": 382836,
+     "dtype": "uint16",
+     "shape": [
+      61,
+      1046,
+      3
+     ]
+    },
+    "alpha": {
+     "offset": 1514676,
+     "length": 63806,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      1046
+     ]
+    },
+    "color0": {
+     "offset": 1578484,
+     "length": 3138,
+     "dtype": "uint8",
+     "shape": [
+      1046,
+      3
+     ]
+    },
+    "faces": {
+     "offset": 1581624,
+     "length": 12528,
+     "dtype": "uint16",
+     "shape": [
+      2088,
+      3
+     ]
+    }
+   },
+   "n_faces": 2088,
+   "keyframe_map": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ]
+  },
+  {
+   "name": "BowShockShell",
+   "kind": "mesh",
+   "count": 1046,
+   "keyframes": 61,
+   "pos_lo": [
+    -43.67115783691406,
+    -232.4969940185547,
+    -147.8311309814453
+   ],
+   "pos_hi": [
+    161.77584838867188,
+    24.07184600830078,
+    47.56072998046875
+   ],
+   "blocks": {
+    "pos": {
+     "offset": 1594152,
+     "length": 382836,
+     "dtype": "uint16",
+     "shape": [
+      61,
+      1046,
+      3
+     ]
+    },
+    "alpha": {
+     "offset": 1976988,
+     "length": 63806,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      1046
+     ]
+    },
+    "color0": {
+     "offset": 2040796,
+     "length": 3138,
+     "dtype": "uint8",
+     "shape": [
+      1046,
+      3
+     ]
+    },
+    "faces": {
+     "offset": 2043936,
+     "length": 12528,
+     "dtype": "uint16",
+     "shape": [
+      2088,
+      3
+     ]
+    }
+   },
+   "n_faces": 2088,
+   "keyframe_map": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ]
+  },
+  {
+   "name": "RingCurrent",
+   "kind": "mesh",
+   "count": 1500,
+   "keyframes": 61,
+   "pos_lo": [
+    -5.39595365524292,
+    -5.311880111694336,
+    -1.520098090171814
+   ],
+   "pos_hi": [
+    5.39595365524292,
+    5.311880111694336,
+    1.520098090171814
+   ],
+   "blocks": {
+    "pos": {
+     "offset": 2056464,
+     "length": 549000,
+     "dtype": "uint16",
+     "shape": [
+      61,
+      1500,
+      3
+     ]
+    },
+    "alpha": {
+     "offset": 2605464,
+     "length": 91500,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      1500
+     ]
+    },
+    "color0": {
+     "offset": 2696964,
+     "length": 4500,
+     "dtype": "uint8",
+     "shape": [
+      1500,
+      3
+     ]
+    },
+    "faces": {
+     "offset": 2701464,
+     "length": 18000,
+     "dtype": "uint16",
+     "shape": [
+      3000,
+      3
+     ]
+    }
+   },
+   "n_faces": 3000,
+   "source_lattice": [
+    120,
+    50
+   ],
+   "keyframe_map": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ]
+  },
+  {
+   "name": "Plasmasphere",
+   "kind": "mesh",
+   "count": 1025,
+   "keyframes": 61,
+   "pos_lo": [
+    -3.4095468521118164,
+    -3.4156723022460938,
+    -1.6722770929336548
+   ],
+   "pos_hi": [
+    3.41169810295105,
+    3.3970091342926025,
+    1.6642708778381348
+   ],
+   "blocks": {
+    "pos": {
+     "offset": 2719464,
+     "length": 375150,
+     "dtype": "uint16",
+     "shape": [
+      61,
+      1025,
+      3
+     ]
+    },
+    "alpha": {
+     "offset": 3094616,
+     "length": 62525,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      1025
+     ]
+    },
+    "color0": {
+     "offset": 3157144,
+     "length": 3075,
+     "dtype": "uint8",
+     "shape": [
+      1025,
+      3
+     ]
+    },
+    "faces": {
+     "offset": 3160220,
+     "length": 12000,
+     "dtype": "uint16",
+     "shape": [
+      2000,
+      3
+     ]
+    }
+   },
+   "n_faces": 2000,
+   "source_lattice": [
+    50,
+    80
+   ],
+   "keyframe_map": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ]
+  },
+  {
+   "name": "IMFLines",
+   "kind": "lines",
+   "count": 864,
+   "keyframes": 61,
+   "pos_lo": [
+    -37.490901947021484,
+    -91.95579528808594,
+    -61.70125961303711
+   ],
+   "pos_hi": [
+    62.954315185546875,
+    43.393375396728516,
+    36.8524284362793
+   ],
+   "blocks": {
+    "pos": {
+     "offset": 3172220,
+     "length": 316224,
+     "dtype": "uint16",
+     "shape": [
+      61,
+      864,
+      3
+     ]
+    },
+    "alpha": {
+     "offset": 3488444,
+     "length": 52704,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      864
+     ]
+    },
+    "color0": {
+     "offset": 3541148,
+     "length": 2592,
+     "dtype": "uint8",
+     "shape": [
+      864,
+      3
+     ]
+    },
+    "lum": {
+     "offset": 3543740,
+     "length": 52704,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      864
+     ]
+    },
+    "line_starts": {
+     "offset": 3596444,
+     "length": 72,
+     "dtype": "uint32",
+     "shape": [
+      18
+     ]
+    },
+    "line_lengths": {
+     "offset": 3596516,
+     "length": 72,
+     "dtype": "uint32",
+     "shape": [
+      18
+     ]
+    }
+   },
+   "n_lines": 18,
+   "keyframe_map": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ]
+  },
+  {
+   "name": "WindParticles",
+   "kind": "dots",
+   "count": 1200,
+   "keyframes": 61,
+   "pos_lo": [
+    -129.62315368652344,
+    -240.1704559326172,
+    -129.66612243652344
+   ],
+   "pos_hi": [
+    138.99896240234375,
+    218.89244079589844,
+    118.22586822509766
+   ],
+   "blocks": {
+    "pos": {
+     "offset": 3596588,
+     "length": 439200,
+     "dtype": "uint16",
+     "shape": [
+      61,
+      1200,
+      3
+     ]
+    },
+    "alpha": {
+     "offset": 4035788,
+     "length": 73200,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      1200
+     ]
+    },
+    "color0": {
+     "offset": 4108988,
+     "length": 3600,
+     "dtype": "uint8",
+     "shape": [
+      1200,
+      3
+     ]
+    },
+    "lum": {
+     "offset": 4112588,
+     "length": 73200,
+     "dtype": "uint8",
+     "shape": [
+      61,
+      1200
+     ]
+    }
+   },
+   "keyframe_map": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60
+   ]
+  },
+  {
+   "name": "AuroraOval",
+   "kind": "dots",
+   "count": 2760,
+   "keyframes": 24,
+   "pos_lo": [
+    -0.7213054299354553,
+    -0.7212711572647095,
+    -1.0149980783462524
+   ],
+   "pos_hi": [
+    0.7213083505630493,
+    0.7212724685668945,
+    1.0149980783462524
+   ],
+   "blocks": {
+    "pos": {
+     "offset": 4185788,
+     "length": 397440,
+     "dtype": "uint16",
+     "shape": [
+      24,
+      2760,
+      3
+     ]
+    },
+    "alpha": {
+     "offset": 4583228,
+     "length": 66240,
+     "dtype": "uint8",
+     "shape": [
+      24,
+      2760
+     ]
+    },
+    "color0": {
+     "offset": 4649468,
+     "length": 8280,
+     "dtype": "uint8",
+     "shape": [
+      2760,
+      3
+     ]
+    },
+    "lum": {
+     "offset": 4657748,
+     "length": 66240,
+     "dtype": "uint8",
+     "shape": [
+      24,
+      2760
+     ]
+    }
+   },
+   "keyframe_map": [
+    0,
+    3,
+    5,
+    8,
+    10,
+    13,
+    16,
+    18,
+    21,
+    23,
+    26,
+    29,
+    31,
+    34,
+    37,
+    39,
+    42,
+    44,
+    47,
+    50,
+    52,
+    55,
+    57,
+    60
+   ]
+  }
+ ]
+}
